@@ -9,3 +9,14 @@
     </template>
   </q-resource-show>
 </template>
+<script>
+  
+import { Utils } from '../app/Helpers/Utils'
+
+export default {
+  props: ['view'],
+  created() {
+    console.log(this.$attrs)
+  }
+}
+</script>

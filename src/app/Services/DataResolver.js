@@ -9,39 +9,63 @@ export class DataResolver {
     let api = new ResourceApi();
     api.resource_url = item.config.options.api;
 
-    console.log(item.config.options);
-    
     return new Manager({
-      name: item.name,
-      route: item.name,
+      name: item.config.options.data,
+      route: item.config.options.data,
       manager: api,
       icon: item.config.icon,
-      attributes: this.resolveAttributes(item.config.options.data, item.config.options.attributes)
+      attributes: item.config.options.attributes ? this.resolveAttributes(item.config.options.data, item.config.options.attributes) : []
     });
   }
 
-  resolveAttributes(name, fields) {
-    let data = this.getDataByName(name);
+  resolveAttributes(name, attributesSelected) {
 
     let attributes = [];
 
-    for (let i in data.attributes) {
-      let attribute = data.attributes[i];
-      let attrClass = Attributes[attribute.type];
+    for (let attributeName in attributesSelected) {
+      let attributeSelected = attributesSelected[attributeName]
 
-      if (attrClass) {
+      let attributeSchema = this.findAttributeByName(name, attributeSelected.name)
 
-        if (fields.indexOf(attribute.name) !== -1) {
+      if (!attributeSchema) {
+
+        console.error(`Cannot find Attribute in Schema ${name}:${attributeSelected.name}`)
+      } else {
+
+        let attrClass = Attributes[attributeSchema.type];
+
+        if (!attrClass) {
+
+          console.error(`Cannot find Javascript Attribute Class ${name}:${attributeSchema.type}`)
+
+        } else {
+          let attribute = new attrClass(attributeName).set('column', attributeSchema.name)
+
+          if (attributeSchema.type === 'Enum') {
+            attribute.setOptions(attributeSchema.options)
+          }
+          
           attributes.push(attribute);
         }
-      } else {
-        console.error(`Cannot find ${name}:${attribute.type}`)
       }
     }
 
     return attributes;
 
   }
+
+  findAttributeByName (dataName, attributeName) {
+    let data = this.getDataByName(dataName);
+
+    if (!data) {
+      throw `Cannot find data with name ${dataName}`
+    }
+
+    return _.find(data.attributes, attribute => {
+      return attribute.name === attributeName
+    })
+  }
+
 
   getDataByName (name) {
     return container.get('$quartz.data').find((item) => {

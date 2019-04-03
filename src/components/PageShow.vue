@@ -13,7 +13,7 @@
 
 <script>
 
-import Show from '../Resource/show'
+import Show from './ResourceShow'
 
 export default {
   components: {
