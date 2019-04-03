@@ -7,7 +7,7 @@ export class DataResolver {
 
   createManager (item) {
     let api = new ResourceApi();
-    api.resource_url = '/admin/' + item.config.options.api;
+    api.resource_url = item.config.options.api;
 
     console.log(item.config.options);
     
@@ -16,7 +16,7 @@ export class DataResolver {
       route: item.name,
       manager: api,
       icon: item.config.icon,
-      attributes: this.resolveAttributes(item.config.options.data, item.config.options.fields)
+      attributes: this.resolveAttributes(item.config.options.data, item.config.options.attributes)
     });
   }
 
