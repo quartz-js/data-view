@@ -28,7 +28,23 @@ export default {
         return 'q-secret'
       }
 
-      throw `Cannot find a valid class attribute for ${this.manager.name}:${this.attributeName}:${attribute}`
+      if (attribute === 'BooleanAttribute') {
+        return 'q-switch'
+      }
+
+      if (attribute === 'EnumAttribute') {
+        return 'q-select'
+      }
+
+      if (attribute === 'YamlAttribute') {
+        return 'q-yaml'
+      }
+
+      if (attribute === 'HtmlAttribute') {
+        return 'q-html'
+      }
+
+      throw `Cannot find a valid component for attribute ${this.manager.name}:${this.attributeName}:${attribute}`
     },
     getAttribute() {
       return this.manager.getAttribute(this.attributeName)

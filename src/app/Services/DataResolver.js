@@ -39,10 +39,20 @@ export class DataResolver {
           console.error(`Cannot find Javascript Attribute Class ${name}:${attributeSchema.type}`)
 
         } else {
-          let attribute = new attrClass(attributeName).set('column', attributeSchema.name)
+          let attribute = new attrClass(attributeName)
+            .set('column', attributeSchema.name)
+            .set('fillable', attributeSchema.fillable)
+            .set('required', attributeSchema.required)
+            .set('unique', attributeSchema.unique)
+
 
           if (attributeSchema.type === 'Enum') {
-            attribute.setOptions(attributeSchema.options)
+            attribute.setOptions(attributeSchema.options.map(item => { 
+              return {
+                label: item,
+                value: item
+              }
+            }))
           }
           
           attributes.push(attribute);

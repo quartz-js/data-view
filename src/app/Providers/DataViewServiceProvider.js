@@ -30,9 +30,9 @@ export class DataViewServiceProvider extends ServiceProvider {
     let api = new DataViewApi();
     let resolver = new DataResolver();
     return api.admin().then(response => {
+      this.addLang({'en': {"$quartz": { data: response.body.lang}}})
       return resolver.ini(response.body.data);
     }).then(response => {
-
 
       container.set('$quartz.view.components', []);
       container.set('$quartz.view.services', []);
@@ -66,14 +66,15 @@ export class DataViewServiceProvider extends ServiceProvider {
 
     item.tags = ['data'];
     let cont = container.get('$quartz.view.services');
-
-    cont.push(item)
+    console.log(this.parseItemDataView(item));
+    
+    cont.push(this.parseItemDataView(item))
   }
 
   registerDataViewRoutes(item) {
     let cont = container.get('$quartz.view.routes');
 
-    cont.push(item)
+    cont.push(this.parseItemDataView(item))
 
 
     item.config.map(route => {
@@ -102,6 +103,25 @@ export class DataViewServiceProvider extends ServiceProvider {
       }
     })
 
-    cont.push(item)
+    cont.push(this.parseItemDataView(item))
+  }
+
+  parseItemDataView (item) {
+
+    if (item.config.icon) {
+      item.config.icon = this.parseUrlResource(item.config.icon)
+    }
+
+    return item
+  }
+
+  parseUrlResource (url) {
+    try {
+      new URL(url)
+
+      return url;
+    } catch (e) {
+      return new URL(container.get('config').app.api.url).origin + url
+    }
   }
 }
