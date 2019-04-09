@@ -32,6 +32,8 @@ export class DataResolver {
         console.error(`Cannot find Attribute in Schema ${name}:${attributeSelected.name}`)
       } else {
 
+        console.log(Attributes);
+        
         let attrClass = Attributes[attributeSchema.type];
 
         if (!attrClass) {
@@ -45,6 +47,14 @@ export class DataResolver {
             .set('required', attributeSchema.required)
             .set('unique', attributeSchema.unique)
 
+            console.log(attributeName);
+            console.log(attributeSelected);
+              
+            if (attributeSelected.fixed) {
+              attribute.set('fixed', (resource) => {
+                return attributeSelected.fixed;
+              })
+            }
 
           if (attributeSchema.type === 'Enum') {
             attribute.setOptions(attributeSchema.options.map(item => { 

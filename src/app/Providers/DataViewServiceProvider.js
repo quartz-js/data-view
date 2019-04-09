@@ -15,6 +15,7 @@ export class DataViewServiceProvider extends ServiceProvider {
     this.registerComponent("DataViewPageIndex", require('../../components/PageIndex').default)
     this.registerComponent("DataViewResourceCreate", require('../../components/ResourceCreate').default)
     this.registerComponent("DataViewResourceUpdate", require('../../components/ResourceUpdate').default)
+    this.registerComponent("DataViewResourceDelete", require('../../components/ResourceRemove').default)
     this.registerComponent("DataViewResourceShow", require('../../components/ResourceShow').default)
     this.registerComponent("DataViewResourceIndex", require('../../components/ResourceIndex').default)
     this.registerComponent("DataViewAttributeInput", require('../../components/AttributeInput').default)
@@ -66,7 +67,6 @@ export class DataViewServiceProvider extends ServiceProvider {
 
     item.tags = ['data'];
     let cont = container.get('$quartz.view.services');
-    console.log(this.parseItemDataView(item));
     
     cont.push(this.parseItemDataView(item))
   }

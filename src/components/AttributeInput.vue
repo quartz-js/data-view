@@ -44,6 +44,14 @@ export default {
         return 'q-html'
       }
 
+      if (attribute === 'BelongsToAttribute') {
+        return 'q-belongs-to'
+      }
+
+      if (attribute === 'MorphToAttribute') {
+        return 'q-morph-to'
+      }
+
       throw `Cannot find a valid component for attribute ${this.manager.name}:${this.attributeName}:${attribute}`
     },
     getAttribute() {
