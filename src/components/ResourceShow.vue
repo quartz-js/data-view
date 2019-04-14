@@ -2,15 +2,16 @@
   <q-resource-show v-bind="$attrs" :config="manager">
     <template slot='show' slot-scope="scope">
       <component 
-        v-for="(attributeOptions, attributeName) in attributes"
+        v-for="attribute in manager.attributes"
+        v-if="!attribute.hidden"
         v-bind="$attrs"
-        :is="toComponent(attributeOptions.extends)" 
+        :is="toComponent(attribute.style.extends)" 
         :resource="scope.resource"
-        :attributeOptions="attributeOptions"
-        :attributeName="attributeName"
+        :attributeOptions="attribute.style"
+        :attributeName="attribute.label"
         :errors="scope.errors"
         :manager="manager"
-      />
+        />
     </template>
   </q-resource-show>
 </template>
@@ -23,11 +24,6 @@ export default {
   mixins: [
     Common
   ],
-  data() {
-    return {
-      attributes: []
-    }
-  },
   methods: {
     toComponent(str) {
       return Utils.nameToComponent(str)
@@ -35,7 +31,6 @@ export default {
   },
   created() {
     this.createManager()
-    this.attributes = this.view.config.options.attributes
   }
 }
 </script>

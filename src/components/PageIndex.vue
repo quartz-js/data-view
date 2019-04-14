@@ -1,7 +1,7 @@
 <template>
   <q-page-index :config="manager" v-bind="$attrs">
     <template slot='body' slot-scope="scope">
-      <component v-for="section in sections" :is="toComponent(section.extends)" :resource="scope.resource" v-bind="$attrs"/>
+      <component v-for="section in sections" :is="toComponent(section.extends)" :resource="scope.resource" v-bind="$attrs" :key="manager.name + section.extends"/>
     </template>
   </q-page-index>
 </template>
@@ -21,7 +21,7 @@ export default {
     }
   },
   created() {
-    this.createManager()
+    this.createManagerByName(this.view.config.options.data)
 
     this.sections = this.view.config.options.sections
   }

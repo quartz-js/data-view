@@ -1,55 +1,24 @@
 <template>
-  <component :is="getComponent()" v-model="resource" :attribute="getAttribute()" :errors="errors"/>
+  <v-flex xs12 class="px-4">
+    <component :is="getComponent()" v-model="rawResource" :attribute="getAttribute()" :errors="errors" @input="onChange()"/>
+  </v-flex>
 </template>
 <script>
 
-import { Attributes } from '@railken/quartz-core'
+import { Attributes, container, HandleResource } from '@railken/quartz-core'
 
 export default {
-  props: ['resource', 'manager', 'attributeName', 'attributeOptions', 'errors'],
+  props: ['manager', 'attributeName', 'attributeOptions', 'errors'],
+  mixins: [ HandleResource ],
   methods: {
     // Change based on Attribute Class
     getComponent() {
       let attribute = this.getAttribute().constructor.name
 
-      if (attribute === 'TextAttribute') {
-        return 'q-text'
-      }
+      let component = container.get('$quartz.attributeResolvers')[attribute];
 
-      if (attribute === 'LongTextAttribute') {
-        return 'q-textarea'
-      }
-
-      if (attribute === 'EmailAttribute') {
-        return 'q-text'
-      }
-
-      if (attribute === 'PasswordAttribute') {
-        return 'q-secret'
-      }
-
-      if (attribute === 'BooleanAttribute') {
-        return 'q-switch'
-      }
-
-      if (attribute === 'EnumAttribute') {
-        return 'q-select'
-      }
-
-      if (attribute === 'YamlAttribute') {
-        return 'q-yaml'
-      }
-
-      if (attribute === 'HtmlAttribute') {
-        return 'q-html'
-      }
-
-      if (attribute === 'BelongsToAttribute') {
-        return 'q-belongs-to'
-      }
-
-      if (attribute === 'MorphToAttribute') {
-        return 'q-morph-to'
+      if (component) {
+        return component;
       }
 
       throw `Cannot find a valid component for attribute ${this.manager.name}:${this.attributeName}:${attribute}`
