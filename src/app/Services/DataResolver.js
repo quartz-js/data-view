@@ -1,4 +1,5 @@
 import { container, Attributes, ResourceApi, Manager, Helper, Interceptor } from '@railken/quartz-core'
+import { DataViewError } from '../Errors/DataViewError'
 import _ from 'lodash'
 
 export class DataResolver {
@@ -141,10 +142,16 @@ export class DataResolver {
             return `data-view-${action}`
           })
 
+          let view = this.getViewByName(`${key}-resource`);
+
+          if (!view) {
+            throw new DataViewError(`Cannot find view with name: ${key}-resource`)
+          }
+
           attribute.addRelationable({
             key: key,
             manager: (resource) => {
-              return this.createManager(this.getViewByName(`${key}-resource`))
+              return this.createManager(view)
             },
             actions: actions
           })

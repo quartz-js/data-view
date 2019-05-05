@@ -21,9 +21,10 @@ export default {
     }
   },
   created() {
-    this.createManagerByName(this.view.config.options.data)
 
+    this.createManagerByName(this.view.config.options.data)
     this.sections = this.view.config.options.sections
+
   }
 }
 </script>

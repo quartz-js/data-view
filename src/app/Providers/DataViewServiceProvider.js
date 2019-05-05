@@ -67,7 +67,7 @@ export class DataViewServiceProvider extends ServiceProvider {
 
 
           item.priority = 1;
-          item.config = yaml.load(item.config)
+          item.config = item.processed
 
           item = this.parseItemDataView(item)
 
