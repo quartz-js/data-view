@@ -174,8 +174,9 @@ export class DataResolver {
 
         if (queries.length > 0) {
           attribute.setQuery((key, resource) => {
-            queries.push(`name ct '${key}'`)
-            return Helper.mergePartsQuery(queries, 'and');
+            let searchQuery = _.clone(queries);
+            searchQuery.push(`name ct '${key}'`);
+            return Helper.mergePartsQuery(searchQuery, 'and');
           });
 
         }
