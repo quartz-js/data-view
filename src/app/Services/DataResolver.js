@@ -43,29 +43,26 @@ export class DataResolver {
 
       let attributeSelected = attributesSelected[attributeName]
 
-
       attributeSelected = this.mergeWithBase(name, attributeName, attributeSelected);
 
-
       if (!attributeSelected) {
-        throw `Undefined element at key: ${attributeName}. ${JSON.stringify(attributesSelected)}`
+        throw new DataViewError(`Undefined element at key: ${attributeName}. ${JSON.stringify(attributesSelected)}`)
       }
 
       if (!attributeSelected.name) {
-        throw `Missing property name in ${name}:${attributeName}. ${JSON.stringify(attributesSelected)}`
+       throw new DataViewError(`Missing property name in ${name}:${attributeName}. ${JSON.stringify(attributesSelected)}`)
       }
 
       let attributeSchema = this.findAttributeByName(name, attributeSelected.name)
 
       if (!attributeSchema) {
-        throw `Cannot find Attribute in Schema ${name}:${attributeSelected.name}`
+        throw new DataViewError(`Cannot find Attribute in Schema ${name}:${attributeSelected.name}`)
       }
 
       let attrClass = container.get('$quartz.attributes')[attributeSchema.type]
       
       if (!attrClass) {
-
-        throw `Cannot find Javascript Attribute Class ${name}:${attributeSchema.type}`
+        throw new DataViewError(`Cannot find Javascript Attribute Class ${name}:${attributeSchema.type}`)
       }
 
       let attribute = new attrClass(attributeName)
@@ -92,11 +89,24 @@ export class DataResolver {
       }
 
       if (attributeSchema.type === 'BelongsTo' || attributeSchema.type === 'MorphTo') {
+
+        if (manager.descriptor.tree && manager.descriptor.tree.parent === attribute.column) {
+          if (attribute.fixed(null) === undefined) {
+            attribute.set('fixed', () => {
+              return null;
+            });
+          }
+        }
+
         let relation = this.findRelationByName(name, attributeSchema.relation);
         let relationKey = attributeSchema.descriptor.relation_key;
 
         if (!attributeSelected.options) {
-          throw `Expected options in ${name}:${attributeSelected.name}. Got: ${JSON.stringify(attributeSelected)}`
+          throw new DataViewError(`Expected options in ${name}:${attributeSelected.name}. Got: ${JSON.stringify(attributeSelected)}`)
+        }
+
+        if (!relation) {
+          throw new DataViewError(`Cannot find relation by name: ${name}:${attributeSchema.relation}`)
         }
 
         // Create a list of all available managers and components
@@ -137,6 +147,11 @@ export class DataResolver {
         }) 
         
         keys.map(key => {
+
+
+          if (!attributeSelected.options[key]) {
+            throw new DataViewError(`Cannot find options with key ${key}. You should probably update the data-view`)
+          }
 
           let actions = _.map(attributeSelected.options[key].actions, action => {
             return `data-view-${action}`
@@ -219,7 +234,7 @@ export class DataResolver {
     let data = this.getDataByName(dataName);
 
     if (!data) {
-      throw `Cannot find data with name ${dataName}`
+      throw new DataViewError(`Cannot find data with name ${dataName}`)
     }
 
     return _.find(data.attributes, attribute => {
@@ -231,7 +246,7 @@ export class DataResolver {
     let data = this.getDataByName(dataName);
 
     if (!data) {
-      throw `Cannot find data with name ${dataName}`
+      throw new DataViewError(`Cannot find data with name ${dataName}`)
     }
 
     return _.find(data.relations, attribute => {
