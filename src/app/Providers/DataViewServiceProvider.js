@@ -24,8 +24,10 @@ export class DataViewServiceProvider extends ServiceProvider {
       'DateTimeAttribute': 'q-datetime',
       'BelongsToAttribute': 'q-belongs-to',
       'MorphToAttribute': 'q-morph-to',
+      'NumberAttribute': 'q-text',
       'ClassNameAttribute': 'q-select',
-      'FileAttribute': 'q-file'
+      'FileAttribute': 'q-file',
+      'UuidAttribute': 'q-text'
     });
 
     this.registerComponent("DataViewPageShow", require('../../components/PageShow').default)
