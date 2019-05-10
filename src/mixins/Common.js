@@ -37,7 +37,16 @@ export var Common = {
     },
     createManager() {
       this.view.config.options = this.mergeOptions(this.view.config.options, this.options)
+
       this.manager = this.newManagerByView(this.view);
+
+      if (this.$attrs.onManagerLoad) {
+
+        this.$attrs.onManagerLoad(this.manager);
+      }
+
+      if (!this.manager) {
+      }
     },
     createManagerByName(name) {
       this.view.config.options = this.mergeOptions(this.view.config.options, this.options)
