@@ -25,7 +25,15 @@ export class DataResolver {
     });
 
     if (item.config.options.attributes) {
-      this.resolveAttributes(manager, item.config.options.data, item.config.options.attributes);
+      try {
+        this.resolveAttributes(manager, item.config.options.data, item.config.options.attributes);
+      } catch (e) {
+        if (e instanceof DataViewError) {
+          throw new DataViewError(`[View:${item.name}] ` + e.message);
+        }
+
+        throw e;
+      }
     }
 
     let data = Interceptor.resolve('managerOnCreate', {
@@ -101,8 +109,9 @@ export class DataResolver {
         let relation = this.findRelationByName(name, attributeSchema.relation);
         let relationKey = attributeSchema.descriptor.relation_key;
 
+
+        // NO Data has been attached to this
         if (!attributeSelected.options) {
-          throw new DataViewError(`Expected options in ${name}:${attributeSelected.name}. Got: ${JSON.stringify(attributeSelected)}`)
         }
 
         if (!relation) {
