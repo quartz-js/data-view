@@ -177,33 +177,21 @@ export class DataResolver {
             manager: (resource) => {
               return this.createManager(view)
             },
-            actions: actions
+            actions: actions,
+            onLoad: (t) => {
+              for (let attrKey in attributeSchema.descriptor.constraint) {
+
+                let attrVal = attributeSchema.descriptor.constraint[attrKey];
+
+                if (attrVal) {
+                  t.getAttribute(attrKey).set('fixed', (resource) => {
+                    return {id: attrVal}
+                  });
+                }
+              }
+            }
           })
         });
-
-        let queries = [];
-
-        for (let attrKey in attributeSchema.descriptor.constraint) {
-
-          let attrVal = attributeSchema.descriptor.constraint[attrKey];
-
-          if (attrVal) {
-            /*relationManager.getAttribute(attrKey).set('fixed', (resource) => {
-              return attrVal
-            });*/
-
-            queries.push(`${attrKey} eq '${attrVal}'`)
-          }
-        }
-
-        if (queries.length > 0) {
-          attribute.setQuery((key, resource) => {
-            let searchQuery = _.clone(queries);
-            searchQuery.push(`name ct '${key}'`);
-            return Helper.mergePartsQuery(searchQuery, 'and');
-          });
-
-        }
       }
 
       manager.addAttribute(attribute);
