@@ -17,7 +17,7 @@ export default {
   ],
   methods: {
     getComponent() {
-      return this.resource ? "data-view-" + this.view.config.update : "data-view-" + this.view.config.create
+      return this.resource && this.resource.id ? "data-view-" + this.view.config.update : "data-view-" + this.view.config.create
     }
   },
 }
