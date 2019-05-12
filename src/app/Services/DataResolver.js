@@ -24,16 +24,15 @@ export class DataResolver {
       attributes: []
     });
 
-    if (item.config.options.attributes) {
-      try {
-        this.resolveAttributes(manager, item.config.options.data, item.config.options.attributes);
-      } catch (e) {
-        if (e instanceof DataViewError) {
-          throw new DataViewError(`[View:${item.name}] ` + e.message);
-        }
+    try {
 
-        throw e;
+      item.config.options.components && this.resolveAttributes(manager, item.config.options.data, item.config.options.components);
+    } catch (e) {
+      if (e instanceof DataViewError) {
+        throw new DataViewError(`[View:${item.name}] ` + e.message);
       }
+
+      throw e;
     }
 
     let data = Interceptor.resolve('managerOnCreate', {
@@ -48,7 +47,6 @@ export class DataResolver {
 
     for (let attributeName in attributesSelected) {
 
-
       let attributeSelected = attributesSelected[attributeName]
 
       attributeSelected = this.mergeWithBase(name, attributeName, attributeSelected);
@@ -61,6 +59,20 @@ export class DataResolver {
        throw new DataViewError(`Missing property name in ${name}:${attributeName}. ${JSON.stringify(attributesSelected)}`)
       }
 
+      if (attributeSelected.type === 'attribute') {
+        this.resolveAttribute(name, attributeName, attributeSelected, manager);
+      }
+
+      if (attributeSelected.type === 'relation') {
+        this.resolveRelation(name, attributeName, attributeSelected, manager);
+      }
+
+
+    }
+  }
+
+  resolveAttribute(name, attributeName, attributeSelected, manager)
+  {
       let attributeSchema = this.findAttributeByName(name, attributeSelected.name)
 
       if (!attributeSchema) {
@@ -88,120 +100,178 @@ export class DataResolver {
       }
 
       if (attributeSchema.type === 'Enum') {
-        attribute.setOptions(attributeSchema.options.map(item => { 
-          return {
-            label: item,
-            value: item
-          }
-        }))
+        this.resolveEnum(name, attribute, attributeSchema, attributeSelected, manager);
       }
 
       if (attributeSchema.type === 'BelongsTo' || attributeSchema.type === 'MorphTo') {
+        this.resolveBelongsTo(name, attribute, attributeSchema, attributeSelected, manager);
+      }
+      manager.addAttribute(attribute);
+  }
 
-        if (manager.descriptor.tree && manager.descriptor.tree.parent === attribute.column) {
-          if (attribute.fixed(null) === undefined) {
-            attribute.set('fixed', () => {
-              return null;
-            });
-          }
-        }
+  resolveRelation(name, relationName, attributeSelected, manager)
+  {
+      let relationSchema = this.findRelationByName(name, attributeSelected.name);
 
-        let relation = this.findRelationByName(name, attributeSchema.relation);
-        let relationKey = attributeSchema.descriptor.relation_key;
-
-
-        // NO Data has been attached to this
-        if (!attributeSelected.options) {
-        }
-
-        if (!relation) {
-          throw new DataViewError(`Cannot find relation by name: ${name}:${attributeSchema.relation}`)
-        }
-
-        // Create a list of all available managers and components
-
-        let keys = [];
-
-        if (attributeSchema.type === 'BelongsTo') {
-          keys = [relation.data]
-
-          attribute.setRelationableSwitcher(resource => {
-            return relation.data
-          })
-
-        }
-
-        if (attributeSchema.type === 'MorphTo') {
-          keys = this.findAttributeByName(name, relationKey).options
-
-          attribute.setRelationableSwitcher(resource => {
-            return resource[relationKey]
-          })
-        }
-
-        attribute.setRetriever('include', (includes) => {
-          includes.push(attributeSchema.relation)
-          return includes
-        })
-
-        attribute.setRetriever('beforePersist', (params) => {
-          delete params[attribute.getRelationName()]
-          return params
-        })
-
-        attribute.setRetriever('watchToReload', (params) => {
-          params.push(relationKey)
-
-          return params
-        }) 
-        
-        keys.map(key => {
-
-
-          if (!attributeSelected.options[key]) {
-            throw new DataViewError(`Cannot find options with key ${key}. You should probably update the data-view`)
-          }
-
-          let actions = _.map(attributeSelected.options[key].actions, action => {
-            return `data-view-${action}`
-          })
-
-          let view = this.getViewByName(`${key}-resource`);
-
-          if (!view) {
-            throw new DataViewError(`Cannot find view with name: ${key}-resource`)
-          }
-
-          attribute.addRelationable({
-            key: key,
-            manager: (resource) => {
-              return this.createManager(view)
-            },
-            actions: actions,
-            onLoad: (t) => {
-              for (let attrKey in attributeSchema.descriptor.constraint) {
-
-                let attrVal = attributeSchema.descriptor.constraint[attrKey];
-
-                if (attrVal) {
-                  t.getAttribute(attrKey).set('fixed', (resource) => {
-                    return {id: attrVal}
-                  });
-                }
-              }
-            }
-          })
-        });
+      if (!relationSchema) {
+        throw new DataViewError(`Cannot find Relation in Schema ${name}:${attributeSelected.name}`)
       }
 
-      manager.addAttribute(attribute);
+      let attrClass = container.get('$quartz.attributes')[relationSchema.type]
+      
+      if (!attrClass) {
+        throw new DataViewError(`Cannot find Javascript Attribute Class ${name}:${relationSchema.type}`)
+      }
+
+      if (relationSchema.type === 'MorphToMany') {
+
+        if (!relationSchema.intermediate) {
+          return;
+        }
+
+        let scopes = relationSchema.scope.slice(1);
+
+        let view = this.getViewByName(`${relationSchema.data}-resource`);
+
+        let apiSearcher = this.newApiByUrl(view.config.options.api).setFilterQuery(function (query) {
+          let queries = [scopes.map(scope => {
+            return `${scope.column} ${scope.operator} "${scope.value}"`
+          })]
+          queries.push(query);
+          return Helper.mergePartsQuery(queries, 'and');
+        });
+
+        let apiPersister = this.newApiByUrl(this.getViewByName(`${relationSchema.intermediate}-resource`).config.options.api);
+
+        let attribute = new attrClass(relationName, apiSearcher, apiPersister)
+          .set('relationId', `${relationSchema.data}_id`)
+          .set('relationName', relationSchema.data)
+          .set('morphTypeColumn', relationSchema.scope[0].column)
+          .set('morphKeyColumn', relationSchema.scope[0].column.replace("_type", "_id"))
+          .set('morphTypeValue', relationSchema.scope[0].value)
+          .set('fillable', true)
+          .set('style', _.merge({extends: attributeSelected.extends}, attributeSelected.options))
+
+
+          manager.addAttribute(attribute);
+      }
+
+  }
+  resolveEnum(name, attribute, attributeSchema, attributeSelected, manager)
+  {
+    attribute.setOptions(attributeSchema.options.map(item => { 
+      return {
+        label: item,
+        value: item
+      }
+    }))
+  }
+
+  resolveBelongsTo(name, attribute, attributeSchema, attributeSelected, manager)
+  {
+    if (manager.descriptor.tree && manager.descriptor.tree.parent === attribute.column) {
+      if (attribute.fixed(null) === undefined) {
+        attribute.set('fixed', () => {
+          return null;
+        });
+      }
+    }
+
+    let relation = this.findRelationByName(name, attributeSchema.relation);
+    let relationKey = attributeSchema.descriptor.relation_key;
+
+
+    // NO Data has been attached to this
+    if (!attributeSelected.options) {
+    }
+
+    if (!relation) {
+      throw new DataViewError(`Cannot find relation by name: ${name}:${attributeSchema.relation}`)
+    }
+
+    // Create a list of all available managers and components
+
+    let keys = [];
+
+    if (attributeSchema.type === 'BelongsTo') {
+      keys = [relation.data]
+
+      attribute.setRelationableSwitcher(resource => {
+        return relation.data
+      })
 
     }
+
+    if (attributeSchema.type === 'MorphTo') {
+      keys = this.findAttributeByName(name, relationKey).options
+
+      attribute.setRelationableSwitcher(resource => {
+        return resource[relationKey]
+      })
+    }
+
+    attribute.setRetriever('include', (includes) => {
+      includes.push(attributeSchema.relation)
+      return includes
+    })
+
+    attribute.setRetriever('beforePersist', (params) => {
+      delete params[attribute.getRelationName()]
+      return params
+    })
+
+    attribute.setRetriever('watchToReload', (params) => {
+      params.push(relationKey)
+
+      return params
+    }) 
+    
+    keys.map(key => {
+
+
+      if (!attributeSelected.options[key]) {
+        throw new DataViewError(`Cannot find options with key ${key}. You should probably update the data-view`)
+      }
+
+      let actions = _.map(attributeSelected.options[key].actions, action => {
+        return `data-view-${action}`
+      })
+
+      let view = this.getViewByName(`${key}-resource`);
+
+      attribute.addRelationable({
+        key: key,
+        manager: (resource) => {
+          return this.createManager(view)
+        },
+        actions: actions,
+        onLoad: (t) => {
+          for (let attrKey in attributeSchema.descriptor.constraint) {
+
+            let attrVal = attributeSchema.descriptor.constraint[attrKey];
+
+            if (attrVal) {
+              t.getAttribute(attrKey).set('fixed', (resource) => {
+                return {id: attrVal}
+              });
+            }
+          }
+        }
+      })
+    });
   }
+
   getViewByName (name) {
-    return _.cloneDeep(container.get('$quartz.views').find(item => {
+    let view = _.cloneDeep(container.get('$quartz.views').find(item => {
       return item.name === name
     }))
+
+    if (!view) {
+
+        throw new DataViewError(`Cannot find view with name: ${name}`)
+    }
+
+    return view;
   }
 
   mergeWithBase (name, attributeName, attribute) {
@@ -241,7 +311,6 @@ export class DataResolver {
 
   findRelationByName (dataName, relationName) {
     let data = this.getDataByName(dataName);
-
     if (!data) {
       throw new DataViewError(`Cannot find data with name ${dataName}`)
     }

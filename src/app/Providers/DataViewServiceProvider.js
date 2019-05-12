@@ -6,12 +6,12 @@ import _ from 'lodash'
 var yaml = require('js-yaml');
 import { Utils } from '../Helpers/Utils'
 
-import { Attributes, Manager } from '@railken/quartz-core'
+import { Attributes, Relations, Manager } from '@railken/quartz-core'
 
 export class DataViewServiceProvider extends ServiceProvider {
   register () {
 
-    container.set('$quartz.attributes', Attributes);
+    container.set('$quartz.attributes', _.merge(Attributes, Relations));
     container.set('$quartz.attributeResolvers', {
       'TextAttribute': 'q-text',
       'LongTextAttribute': 'q-textarea',
@@ -27,7 +27,8 @@ export class DataViewServiceProvider extends ServiceProvider {
       'NumberAttribute': 'q-text',
       'ClassNameAttribute': 'q-select',
       'FileAttribute': 'q-file',
-      'UuidAttribute': 'q-text'
+      'UuidAttribute': 'q-text',
+      'MorphToMany': 'q-morph-to-many',
     });
 
     this.registerComponent("DataViewPageShow", require('../../components/PageShow').default)

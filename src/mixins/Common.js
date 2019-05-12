@@ -16,7 +16,7 @@ export var Common = {
         return view
       }
 
-      _.map(view.attributes, attribute => {
+      _.map(view.components, attribute => {
 
         if (attribute.fixed && typeof attribute.fixed === 'string' && attribute.fixed.match(/\$\{parent\.id\}/)) {
           attribute.fixed = resource;
