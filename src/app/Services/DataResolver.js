@@ -129,29 +129,58 @@ export class DataResolver {
           return;
         }
 
-        let scopes = relationSchema.scope.slice(1);
+        let scopes = _.clone(relationSchema.scope.slice(1));
 
         let view = this.getViewByName(`${relationSchema.data}-resource`);
 
+        let include = [];
+
+
+        let params = [];
+
+        var queriesSearcher = scopes.filter(scope => {
+          return scope.column.split(".").length === 1;
+
+        }).map(scope => {
+          return `${scope.column} ${scope.operator} "${scope.value}"`
+        })
+
+        var queriesPersister = scopes.filter(scope => {
+          return scope.column.split(".").length === 2;
+
+        }).map(scope => {
+
+          scope.column = scope.column.split(".")[1]
+
+          params[scope.column] = scope.value;
+
+          return `${scope.column} ${scope.operator} "${scope.value}"`
+        })
+
         let apiSearcher = this.newApiByUrl(view.config.options.api).setFilterQuery(function (query) {
-          let queries = [scopes.map(scope => {
-            return `${scope.column} ${scope.operator} "${scope.value}"`
-          })]
+          let queries = _.clone(queriesSearcher)
           queries.push(query);
+
           return Helper.mergePartsQuery(queries, 'and');
         });
 
-        let apiPersister = this.newApiByUrl(this.getViewByName(`${relationSchema.intermediate}-resource`).config.options.api);
+        let apiPersister = this.newApiByUrl(this.getViewByName(`${relationSchema.intermediate}-resource`).config.options.api).setFilterQuery(function (query) {
+
+          let queries = _.clone(queriesPersister)
+          queries.push(query);
+
+          return Helper.mergePartsQuery(queries, 'and');
+        }).setParams(params);
+
 
         let attribute = new attrClass(relationName, apiSearcher, apiPersister)
-          .set('relationId', `${relationSchema.data}_id`)
-          .set('relationName', relationSchema.data)
+          .set('relationId', relationSchema.foreignPivotKey)
+          .set('relationName', relationSchema.foreignPivotKey.replace("_id", ""))
           .set('morphTypeColumn', relationSchema.scope[0].column)
           .set('morphKeyColumn', relationSchema.scope[0].column.replace("_type", "_id"))
           .set('morphTypeValue', relationSchema.scope[0].value)
           .set('fillable', true)
           .set('style', _.merge({extends: attributeSelected.extends}, attributeSelected.options))
-
 
           manager.addAttribute(attribute);
       }
@@ -300,10 +329,6 @@ export class DataResolver {
   findAttributeByName (dataName, attributeName) {
     let data = this.getDataByName(dataName);
 
-    if (!data) {
-      throw new DataViewError(`Cannot find data with name ${dataName}`)
-    }
-
     return _.find(data.attributes, attribute => {
       return attribute.name === attributeName
     })
@@ -311,9 +336,6 @@ export class DataResolver {
 
   findRelationByName (dataName, relationName) {
     let data = this.getDataByName(dataName);
-    if (!data) {
-      throw new DataViewError(`Cannot find data with name ${dataName}`)
-    }
 
     return _.find(data.relations, attribute => {
       return attribute.key === relationName
@@ -322,8 +344,14 @@ export class DataResolver {
 
 
   getDataByName (name) {
-    return container.get('$quartz.data').find((item) => {
+    let data = container.get('$quartz.data').find((item) => {
       return item.name === name;
     })
+
+    if (!data) {
+      throw new DataViewError(`Cannot find data with name ${dataName}`)
+    }
+
+    return _.cloneDeep(data);
   }
 };

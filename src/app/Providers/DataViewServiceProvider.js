@@ -54,7 +54,7 @@ export class DataViewServiceProvider extends ServiceProvider {
     return api.admin().then(response => {
       let lang = container.get('settings').get('language', 'en')
       this.addLang({[lang]: {"$quartz": { data: response.body.lang}}})
-      return resolver.addData(response.body.data);
+      return resolver.addData(JSON.parse(response.bodyText).data);
     }).then(response => {
 
       container.set('$quartz.view.components', []);
