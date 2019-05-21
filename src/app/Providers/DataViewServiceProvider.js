@@ -29,6 +29,8 @@ export class DataViewServiceProvider extends ServiceProvider {
       'FileAttribute': 'q-file',
       'UuidAttribute': 'q-text',
       'MorphToMany': 'q-morph-to-many',
+      'BelongsToMany': 'q-belongs-to-many',
+      'ObjectAttribute': 'q-json',
     });
 
     this.registerComponent("DataViewPageShow", require('../../components/PageShow').default)
@@ -37,6 +39,7 @@ export class DataViewServiceProvider extends ServiceProvider {
     this.registerComponent("DataViewResourceUpdate", require('../../components/ResourceUpdate').default)
     this.registerComponent("DataViewResourceDelete", require('../../components/ResourceRemove').default)
     this.registerComponent("DataViewResourceCreateOrUpdate", require('../../components/ResourceCreateOrUpdate').default)
+    this.registerComponent("DataViewResourceShowOrCreate", require('../../components/ResourceShowOrCreate').default)
     this.registerComponent("DataViewResourceShow", require('../../components/ResourceShow').default)
     this.registerComponent("DataViewResourceIndex", require('../../components/ResourceIndex').default)
     this.registerComponent("DataViewAttributeInput", require('../../components/AttributeInput').default)
@@ -103,7 +106,6 @@ export class DataViewServiceProvider extends ServiceProvider {
     let cont = container.get('$quartz.view.routes');
 
     cont.push(item)
-
 
     item.config.map(route => {
       route.component = {

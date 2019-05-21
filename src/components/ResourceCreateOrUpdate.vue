@@ -3,6 +3,7 @@
     :is="getComponent()" 
     :resource="resource"
     v-bind="$attrs"
+    :options="options"
   />
 </template>
 <script>

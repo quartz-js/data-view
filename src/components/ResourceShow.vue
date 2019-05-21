@@ -13,6 +13,14 @@
         :manager="manager"
         />
     </template>
+    <template slot='actions' slot-scope="scope">
+      <component 
+        v-for="component in resourceComponents" 
+        :is="toComponent(component.extends)" 
+        :resource="scope.resource" 
+        :options="mergeOptions(options, component.options)" 
+        v-bind="$attrs"/>
+    </template>
   </q-resource-show>
 </template>
 <script>
@@ -24,6 +32,11 @@ export default {
   mixins: [
     Common
   ],
+  data() {
+    return {
+      resourceComponents: []
+    }
+  },
   methods: {
     toComponent(str) {
       return Utils.nameToComponent(str)
@@ -31,6 +44,7 @@ export default {
   },
   created() {
     this.createManager()
+    this.resourceComponents = this.view.config.options.actions.resource
   }
 }
 </script>

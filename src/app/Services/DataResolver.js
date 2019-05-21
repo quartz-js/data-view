@@ -27,6 +27,9 @@ export class DataResolver {
     try {
 
       item.config.options.components && this.resolveAttributes(manager, item.config.options.data, item.config.options.components);
+
+
+      this.resolveAllRelations(manager);
     } catch (e) {
       if (e instanceof DataViewError) {
         throw new DataViewError(`[View:${item.name}] ` + e.message);
@@ -66,8 +69,6 @@ export class DataResolver {
       if (attributeSelected.type === 'relation') {
         this.resolveRelation(name, attributeName, attributeSelected, manager);
       }
-
-
     }
   }
 
@@ -123,7 +124,7 @@ export class DataResolver {
         throw new DataViewError(`Cannot find Javascript Attribute Class ${name}:${relationSchema.type}`)
       }
 
-      if (relationSchema.type === 'MorphToMany') {
+      if (relationSchema.type === 'MorphToMany' || relationSchema.type === 'BelongsToMany') {
 
         if (!relationSchema.intermediate) {
           return;
@@ -184,8 +185,18 @@ export class DataResolver {
 
           manager.addAttribute(attribute);
       }
-
   }
+  resolveAllRelations (manager) {
+    this.getDataByName(manager.name).relations.map(relation => {
+      if (relation.type === 'HasOne' || relation.type === 'MorphOne') {
+        manager.addHook('include', (includes) => {
+          includes.push(relation.key);
+          return Promise.resolve(includes)
+        })
+      }
+    });
+  }
+
   resolveEnum(name, attribute, attributeSchema, attributeSelected, manager)
   {
     attribute.setOptions(attributeSchema.options.map(item => { 
@@ -239,20 +250,20 @@ export class DataResolver {
       })
     }
 
-    attribute.setRetriever('include', (includes) => {
+    attribute.addHook('include', (includes) => {
       includes.push(attributeSchema.relation)
-      return includes
+      return Promise.resolve(includes)
     })
 
-    attribute.setRetriever('beforePersist', (params) => {
+    attribute.addHook('beforePersist', (params) => {
       delete params[attribute.getRelationName()]
-      return params
+      return Promise.resolve(params)
     })
 
-    attribute.setRetriever('watchToReload', (params) => {
+    attribute.addHook('watchToReload', (params) => {
       params.push(relationKey)
 
-      return params
+      return Promise.resolve(params)
     }) 
     
     keys.map(key => {
