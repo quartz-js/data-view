@@ -40,7 +40,10 @@ export default {
   created() {
     this.createManagerByName(this.view.config.options.data)
 
-    this.resourceComponents = this.view.config.options.actions.resource
+    if (this.view.config.options.actions) {
+      this.resourceComponents = this.view.config.options.actions.resource
+    }
+    
     this.sections = this.view.config.options.sections
 
   },
