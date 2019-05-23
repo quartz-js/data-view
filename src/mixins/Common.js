@@ -33,6 +33,7 @@ export var Common = {
         options1 = this.parseView(options1, resource);
         options2 = this.parseView(options2, resource);
       }
+
       return _.merge(options1, options2)
     },
     createManager() {
@@ -41,7 +42,6 @@ export var Common = {
       this.manager = this.newManagerByView(this.view);
 
       if (this.$attrs.onManagerLoad) {
-
         this.$attrs.onManagerLoad(this.manager);
       }
 
@@ -67,7 +67,7 @@ export var Common = {
       return manager;
     },
 
-    toComponent(str) {
+    toComponent(str, prefix) {
       return Utils.nameToComponent("data-view-" + str)
     }
   }

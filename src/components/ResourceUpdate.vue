@@ -13,6 +13,14 @@
           :errors="scope.errors"
           :manager="manager"
         />
+        <component 
+          v-for="component in view.config.options.components"
+          v-if="component.type === 'component'"
+          v-bind="$attrs"
+          :is="component.extends" 
+          :resource="scope.resource"
+          :manager="manager"
+        />
       </v-layout>
     </template>
   </q-resource-edit>

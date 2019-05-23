@@ -337,6 +337,10 @@ export class DataResolver {
     return api;
   }
 
+  newApiByName(name) {
+    return this.newApiByUrl(this.getViewByName(name + "-resource").config.options.api);
+  }
+
   findAttributeByName (dataName, attributeName) {
     let data = this.getDataByName(dataName);
 

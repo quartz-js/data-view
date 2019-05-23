@@ -31,6 +31,7 @@ export class DataViewServiceProvider extends ServiceProvider {
       'MorphToMany': 'q-morph-to-many',
       'BelongsToMany': 'q-belongs-to-many',
       'ObjectAttribute': 'q-json',
+      'HtmlAttribute': 'q-html',
     });
 
     this.registerComponent("DataViewPageShow", require('../../components/PageShow').default)
