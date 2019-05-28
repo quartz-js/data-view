@@ -331,7 +331,7 @@ export class DataResolver {
   }
 
   newApiByUrl(url) {
-    let api = new ResourceApi();
+    let api = new ResourceApi(container.get('settings').get('language', 'en'));
     api.resource_url = url;
 
     return api;

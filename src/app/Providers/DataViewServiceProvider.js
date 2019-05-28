@@ -53,7 +53,7 @@ export class DataViewServiceProvider extends ServiceProvider {
       return;
     }
 
-    let api = new DataViewApi();
+    let api = new DataViewApi(container.get('settings').get('language', 'en'));
     let resolver = new DataResolver();
     return api.admin().then(response => {
       let lang = container.get('settings').get('language', 'en')
