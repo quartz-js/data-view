@@ -175,8 +175,8 @@ export class DataResolver {
 
 
         let attribute = new attrClass(relationName, apiSearcher, apiPersister)
-          .set('relationId', relationSchema.foreignPivotKey)
-          .set('relationName', relationSchema.foreignPivotKey.replace("_id", ""))
+          .set('relationId', relationSchema.relatedPivotKey)
+          .set('relationName', relationSchema.relatedPivotKey.replace("_id", ""))
           .set('morphTypeColumn', relationSchema.scope[0].column)
           .set('morphKeyColumn', relationSchema.scope[0].column.replace("_type", "_id"))
           .set('morphTypeValue', relationSchema.scope[0].value)
@@ -188,7 +188,7 @@ export class DataResolver {
   }
   resolveAllRelations (manager) {
     this.getDataByName(manager.name).relations.map(relation => {
-      if (relation.type === 'HasOne' || relation.type === 'MorphOne') {
+      if (relation.type === 'HasOne' || relation.type === 'MorphOne' || relation.type === 'MorphToMany'  || relation.type === 'BelongsToMany') {
         manager.addHook('include', (includes) => {
           includes.push(relation.key);
           return Promise.resolve(includes)
