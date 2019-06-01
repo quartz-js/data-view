@@ -87,7 +87,7 @@ export class DataResolver {
       }
 
       let attribute = new attrClass(attributeName)
-        .set('column', attributeSchema.name)
+        .set('column', _.snakeCase(attributeSchema.name))
         .set('fillable', attributeSchema.fillable)
         .set('required', attributeSchema.required)
         .set('unique', attributeSchema.unique)
@@ -175,6 +175,7 @@ export class DataResolver {
 
 
         let attribute = new attrClass(relationName, apiSearcher, apiPersister)
+          .set('column', _.snakeCase(relationName))
           .set('relationId', relationSchema.relatedPivotKey)
           .set('relationName', relationSchema.relatedPivotKey.replace("_id", ""))
           .set('morphTypeColumn', relationSchema.scope[0].column)
