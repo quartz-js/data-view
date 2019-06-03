@@ -87,7 +87,7 @@ export class DataResolver {
       }
 
       let attribute = new attrClass(attributeName)
-        .set('column', _.snakeCase(attributeSchema.name))
+        .set('column', attributeSchema.name)
         .set('fillable', attributeSchema.fillable)
         .set('required', attributeSchema.required)
         .set('unique', attributeSchema.unique)
