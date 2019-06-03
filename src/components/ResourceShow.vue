@@ -17,6 +17,7 @@
       <component 
         v-for="component in resourceComponents" 
         :is="toComponent(component.extends)" 
+        :manager="manager"
         :resource="scope.resource" 
         :options="mergeOptions(options, component.options)" 
         v-bind="$attrs"/>
