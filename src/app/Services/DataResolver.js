@@ -15,19 +15,26 @@ export class DataResolver {
   createManager (item) {
 
     let manager = new Manager({
-      name: item.config.options.data,
+      name: item.config.label,
       data: item.config.options.data,
-      route: item.config.options.data,
+      route: item.config.label,
       manager: this.newApiByUrl(item.config.options.api),
       icon: item.config.icon,
       descriptor: this.getDataByName(item.config.options.data).descriptor,
       attributes: []
     });
 
+    if (item.config.options.query) {
+      manager.parserFinalQuery.push((query) => {
+        return manager.mergePartsQuery([item.config.options.query, query], 'and');
+      });
+    }
+
     try {
 
-      item.config.options.components && this.resolveAttributes(manager, item.config.options.data, item.config.options.components);
-
+      item.config.options.components && this.resolveAttributes(manager, item.config.options.data, item.config.options.components, {
+        query: item.config.options.query
+      });
 
       this.resolveAllRelations(manager);
     } catch (e) {
@@ -46,7 +53,7 @@ export class DataResolver {
     return data.manager;
   }
 
-  resolveAttributes(manager, name, attributesSelected) {
+  resolveAttributes(manager, name, attributesSelected, options) {
 
     for (let attributeName in attributesSelected) {
 
@@ -63,16 +70,16 @@ export class DataResolver {
       }
 
       if (attributeSelected.type === 'attribute') {
-        this.resolveAttribute(name, attributeName, attributeSelected, manager);
+        this.resolveAttribute(name, attributeName, attributeSelected, manager, options);
       }
 
       if (attributeSelected.type === 'relation') {
-        this.resolveRelation(name, attributeName, attributeSelected, manager);
+        this.resolveRelation(name, attributeName, attributeSelected, manager, options);
       }
     }
   }
 
-  resolveAttribute(name, attributeName, attributeSelected, manager)
+  resolveAttribute(name, attributeName, attributeSelected, manager, options)
   {
       let attributeSchema = this.findAttributeByName(name, attributeSelected.name)
 
@@ -101,12 +108,13 @@ export class DataResolver {
       }
 
       if (attributeSchema.type === 'Enum') {
-        this.resolveEnum(name, attribute, attributeSchema, attributeSelected, manager);
+        this.resolveEnum(name, attribute, attributeSchema, attributeSelected, manager, options);
       }
 
       if (attributeSchema.type === 'BelongsTo' || attributeSchema.type === 'MorphTo') {
-        this.resolveBelongsTo(name, attribute, attributeSchema, attributeSelected, manager);
+        this.resolveBelongsTo(name, attribute, attributeSchema, attributeSelected, manager, options);
       }
+
       manager.addAttribute(attribute);
   }
 
@@ -173,7 +181,6 @@ export class DataResolver {
           return Helper.mergePartsQuery(queries, 'and');
         }).setParams(params);
 
-
         let attribute = new attrClass(relationName, apiSearcher, apiPersister)
           .set('column', _.snakeCase(relationName))
           .set('relationId', relationSchema.relatedPivotKey)
@@ -188,7 +195,7 @@ export class DataResolver {
       }
   }
   resolveAllRelations (manager) {
-    this.getDataByName(manager.name).relations.map(relation => {
+    this.getDataByName(manager.data).relations.map(relation => {
       if (relation.type === 'HasOne' || relation.type === 'MorphOne' || relation.type === 'MorphToMany'  || relation.type === 'BelongsToMany') {
         manager.addHook('include', (includes) => {
           includes.push(relation.key);
@@ -208,13 +215,17 @@ export class DataResolver {
     }))
   }
 
-  resolveBelongsTo(name, attribute, attributeSchema, attributeSelected, manager)
+  resolveBelongsTo(name, attribute, attributeSchema, attributeSelected, manager, options)
   {
-    if (manager.descriptor.tree && manager.descriptor.tree.parent === attribute.column) {
-      if (attribute.fixed(null) === undefined) {
-        attribute.set('fixed', () => {
-          return null;
-        });
+    console.log(options);
+
+    if (!options.query) {
+      if (manager.descriptor.tree && manager.descriptor.tree.parent === attribute.column) {
+        if (attribute.fixed(null) === undefined) {
+          attribute.set('fixed', () => {
+            return null;
+          });
+        }
       }
     }
 
@@ -359,9 +370,9 @@ export class DataResolver {
   }
 
 
-  getDataByName (name) {
+  getDataByName (dataName) {
     let data = container.get('$quartz.data').find((item) => {
-      return item.name === name;
+      return item.name === dataName;
     })
 
     if (!data) {

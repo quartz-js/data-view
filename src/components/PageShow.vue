@@ -72,7 +72,7 @@ export default {
     }
   },
   created() {
-    this.createManagerByName(this.view.config.options.data)
+    this.createManagerByName(this.view.config.label)
 
     if (this.view.config.options.actions) {
       this.resourceComponents = this.view.config.options.actions.resource
