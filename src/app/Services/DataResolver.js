@@ -144,7 +144,6 @@ export class DataResolver {
 
         let include = [];
 
-
         let params = [];
 
         var queriesSearcher = scopes.filter(scope => {
@@ -181,13 +180,15 @@ export class DataResolver {
           return Helper.mergePartsQuery(queries, 'and');
         }).setParams(params);
 
+        console.log(relationSchema);
+
         let attribute = new attrClass(relationName, apiSearcher, apiPersister)
           .set('column', _.snakeCase(relationName))
           .set('relationId', relationSchema.relatedPivotKey)
           .set('relationName', relationSchema.relatedPivotKey.replace("_id", ""))
-          .set('morphTypeColumn', relationSchema.scope[0].column)
-          .set('morphKeyColumn', relationSchema.scope[0].column.replace("_type", "_id"))
-          .set('morphTypeValue', relationSchema.scope[0].value)
+          .set('morphTypeColumn', relationSchema.scope[0] ? relationSchema.scope[0].column : null)
+          .set('morphTypeValue', relationSchema.scope[0] ? relationSchema.scope[0].value : null)
+          .set('morphKeyColumn', relationSchema.foreignPivotKey)
           .set('fillable', true)
           .set('style', _.merge({extends: attributeSelected.extends}, attributeSelected.options))
 
@@ -217,8 +218,6 @@ export class DataResolver {
 
   resolveBelongsTo(name, attribute, attributeSchema, attributeSelected, manager, options)
   {
-    console.log(options);
-
     if (!options.query) {
       if (manager.descriptor.tree && manager.descriptor.tree.parent === attribute.column) {
         if (attribute.fixed(null) === undefined) {
