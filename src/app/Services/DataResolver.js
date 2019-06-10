@@ -12,7 +12,7 @@ export class DataResolver {
     container.set('$quartz.data', data);
   }
 
-  createManager (item) {
+  createManager (item, options) {
 
     let manager = new Manager({
       name: item.config.label,
@@ -32,9 +32,9 @@ export class DataResolver {
 
     try {
 
-      item.config.options.components && this.resolveAttributes(manager, item.config.options.data, item.config.options.components, {
+      item.config.options.components && this.resolveAttributes(manager, item.config.options.data, item.config.options.components, _.merge(options, {
         query: item.config.options.query
-      });
+      }));
 
       this.resolveAllRelations(manager);
     } catch (e) {
@@ -107,6 +107,12 @@ export class DataResolver {
         })
       }
 
+      if (attributeSelected.options && attributeSelected.options.default) {
+        attribute.set('default', (resource) => {
+          return attributeSelected.options.default;
+        })
+      }
+
       if (attributeSchema.type === 'Enum') {
         this.resolveEnum(name, attribute, attributeSchema, attributeSelected, manager, options);
       }
@@ -121,7 +127,7 @@ export class DataResolver {
   resolveRelation(name, relationName, attributeSelected, manager)
   {
       let relationSchema = this.findRelationByName(name, attributeSelected.name);
-
+      
       if (!relationSchema) {
         throw new DataViewError(`Cannot find Relation in Schema ${name}:${attributeSelected.name}`)
       }
@@ -139,6 +145,7 @@ export class DataResolver {
         }
 
         let scopes = _.clone(relationSchema.scope.slice(1));
+
 
         let view = this.getViewByName(`${relationSchema.data}-resource`);
 
@@ -180,8 +187,6 @@ export class DataResolver {
           return Helper.mergePartsQuery(queries, 'and');
         }).setParams(params);
 
-        console.log(relationSchema);
-
         let attribute = new attrClass(relationName, apiSearcher, apiPersister)
           .set('column', _.snakeCase(relationName))
           .set('relationId', relationSchema.relatedPivotKey)
@@ -193,6 +198,13 @@ export class DataResolver {
           .set('style', _.merge({extends: attributeSelected.extends}, attributeSelected.options))
 
           manager.addAttribute(attribute);
+
+        if (attribute.style.include) {
+          attribute.addHook('include', (includes) => {
+            includes.push(attribute.style.include);
+            return Promise.resolve(includes)
+          })
+        }
       }
   }
   resolveAllRelations (manager) {
@@ -218,7 +230,8 @@ export class DataResolver {
 
   resolveBelongsTo(name, attribute, attributeSchema, attributeSelected, manager, options)
   {
-    if (!options.query) {
+
+    if (!options.query && !options.ignoreTree) {
       if (manager.descriptor.tree && manager.descriptor.tree.parent === attribute.column) {
         if (attribute.fixed(null) === undefined) {
           attribute.set('fixed', () => {
@@ -263,6 +276,11 @@ export class DataResolver {
 
     attribute.addHook('include', (includes) => {
       includes.push(attributeSchema.relation)
+      
+      if (attribute.style.include) {
+        includes.push(attribute.style.include);
+      }
+
       return Promise.resolve(includes)
     })
 
@@ -290,10 +308,21 @@ export class DataResolver {
 
       let view = this.getViewByName(`${key}-resource`);
 
+
+      if (name === 'product' && attribute.name === 'category_id') {
+        // console.log(attribute.name);
+        // console.log(attribute.style);
+      }
+
       attribute.addRelationable({
         key: key,
         manager: (resource) => {
-          return this.createManager(view)
+
+          let manager = this.createManager(view, {
+            ignoreTree: attribute.style.query
+          });
+
+          return manager
         },
         actions: actions,
         onLoad: (t) => {

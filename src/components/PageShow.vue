@@ -1,5 +1,5 @@
 <template>
-  <q-page-show :config="manager" v-bind="$attrs">
+  <component :is="component" :config="manager" v-bind="$attrs">
     <template slot='tabs' slot-scope="scope">
       <v-tab v-for="(section, key, index) in sections" v-if="hasSection(key)">{{ key }}</v-tab>
       <v-tab-item v-for="(section, key, index) in sections" :transition="false" :reverse-transition="false" v-if="hasSection(key)">
@@ -48,13 +48,13 @@
         :options="mergeOptions(options, component.options)" 
         v-bind="$attrs"/>
     </template>
-  </q-page-show>
+  </component>
 </template>
 <script>
 
 import { DataResolver } from '../app/Services/DataResolver'
 import { Common } from '../mixins/Common'
-import { container } from '@railken/quartz-core'
+import { container, Interceptor } from '@railken/quartz-core'
 import _ from 'lodash'
 
 
@@ -64,6 +64,7 @@ export default {
   ],
   data() {
     return {
+      component: null,
       sections: [],
       listable: [],
       resourceComponents: [],
@@ -85,6 +86,11 @@ export default {
     });
 
     this.cols = JSON.parse(container.get('settings').get('app.page-show.' + this.manager.name, JSON.stringify(this.listable)));
+
+    this.component = Interceptor.resolve('pageShowOnRetrieve', {
+      manager: this.manager,
+      component: 'q-page-show'
+    }).component
   },
   methods: {
     hasSection(section) {
