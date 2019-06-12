@@ -1,18 +1,20 @@
 <template>
   <component :is="component" :config="manager" v-bind="$attrs">
     <template slot='tabs' slot-scope="scope">
-      <v-tab v-for="(section, key, index) in sections" v-if="hasSection(key)">{{ key }}</v-tab>
-      <v-tab-item v-for="(section, key, index) in sections" :transition="false" :reverse-transition="false" v-if="hasSection(key)">
-        <component 
-          v-if="scope.tabs === index"
-          :is="toComponent(section.extends)"
-          :resource="toResource(section, scope.resource)" 
-          v-bind="$attrs"
-          :prefix="manager.name"
-          :options="mergeOptions(options, section.options, scope.resource)"
-          :key="manager.name + '.' + section.key + section.extends"
-        />
-      </v-tab-item>
+      <v-tab v-for="(section, key, index) in sections" v-if="hasSection(key)"> {{ key }}</v-tab>
+      <v-tabs-items>
+        <v-tab-item v-for="(section, key, index) in sections" :transition="false" :reverse-transition="false" v-if="hasSection(key)">
+          <component 
+            v-if="scope.tabs === index"
+            :is="toComponent(section.extends)"
+            :resource="toResource(section, scope.resource)" 
+            v-bind="$attrs"
+            :prefix="manager.name"
+            :options="mergeOptions(options, section.options, scope.resource)"
+            :key="manager.name + '.' + section.key + section.extends"
+          />
+        </v-tab-item>
+      </v-tabs-items>
 
       <v-dialog v-model="settingsActive" width="500">
         <v-card>
@@ -93,6 +95,9 @@ export default {
     }).component
   },
   methods: {
+    getListable() {
+      return container.get('settings');
+    },
     hasSection(section) {
       return this.cols.indexOf(section) !== -1;
     },
