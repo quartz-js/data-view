@@ -13,7 +13,6 @@ export class DataResolver {
   }
 
   createManager (item, options) {
-
     let manager = new Manager({
       name: item.config.label,
       data: item.config.options.data,
@@ -93,6 +92,7 @@ export class DataResolver {
         throw new DataViewError(`Cannot find Javascript Attribute Class ${name}:${attributeSchema.type}`)
       }
 
+
       let attribute = new attrClass(attributeName)
         .set('column', attributeSchema.name)
         .set('fillable', attributeSchema.fillable)
@@ -105,6 +105,9 @@ export class DataResolver {
         attribute.set('fixed', (resource) => {
           return attributeSelected.fixed;
         })
+      }
+      if (typeof attributeSelected.show !== 'undefined') {
+        attribute.set('show', attributeSelected.show)
       }
 
       if (attributeSelected.options && attributeSelected.options.default) {

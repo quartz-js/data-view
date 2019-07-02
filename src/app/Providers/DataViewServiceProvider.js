@@ -118,6 +118,36 @@ export class DataViewServiceProvider extends ServiceProvider {
     //
   }
 
+  onRegisterDataView (item) {
+    if (item.config.extends === 'data-view-resource-show') {
+
+      let data = item.config.options.data;
+
+      this.registerDataViewComponent({
+        name: data + '-resource-create-or-update',
+        config: {
+          label: item.config.label,
+          icon: item.config.icon,
+          extends: 'data-view-resource-create-or-update',
+          permissions: [data + '.create',data + '.update'],
+          update: data + '-resource-update',
+          create: data + '-resource-create'
+        }
+      });
+      this.registerDataViewComponent({
+        name: data + '-resource-show-or-create',
+        config: {
+          label: item.config.label,
+          icon: item.config.icon,
+          extends: 'data-view-resource-show-or-create',
+          permissions: [data + '.show',data + '.create',data + '.update'],
+          show: data + '-resource-show',
+          create: data + '-resource-create-or-update'
+        }
+      });
+    }
+  }
+
   registerDataViewComponent(item) {
 
     let cont = container.get('$quartz.view.components');
@@ -125,6 +155,8 @@ export class DataViewServiceProvider extends ServiceProvider {
     if (!item.config.extends) {
       return;
     }
+
+    this.onRegisterDataView(item);
 
     this.registerComponent(Utils.nameToComponent('data-view-' + item.name), {
       data() {
