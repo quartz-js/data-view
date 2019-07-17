@@ -12,8 +12,8 @@
 
           <v-tabs v-model="tab">
             <v-tab :key="1">List</v-tab>
-            <v-tab :key="2">Form</v-tab>
-            <v-tab-item :key="1" v-bind:class="{'disable': loading}">
+            <v-tab :key="2">Show - Tabs</v-tab>
+            <v-tab-item :key="1" v-bind:class="{'disable': loading}" :transition="false" :reverse-transition="false">
               <v-data-table
                 :headers="table.list.headers"
                 :items="table.list.items"
@@ -34,6 +34,30 @@
                   </tr>
                   <tr>
                     <td colspan='2'><q-form-yaml class='my-3' :value="dumpYaml(props.item)" @input="updateYaml('list', props.index, $event)"></q-form-yaml></td>
+                  </tr>
+                </template>
+              </v-data-table>
+            </v-tab-item>
+            <v-tab-item :key="2" v-bind:class="{'disable': loading}" :transition="false" :reverse-transition="false">
+              <v-data-table
+                :headers="table.pageShow.headers"
+                :items="table.pageShow.items"
+                hide-actions
+              >
+                <template v-slot:items="props">
+                  <tr>
+                    <td>{{ table.pageShow.keys[props.index] }}</td>
+                    <td class="text-xs-right">
+                      <v-layout align-center>
+                        <v-btn icon v-bind:class="{'hidden': !canMoveDown('pageShow', props.index)}" @click="moveDown('pageShow', props.index)"><v-icon>arrow_drop_down</v-icon></v-btn>
+                        <v-btn icon v-bind:class="{'hidden': !canMoveUp('pageShow', props.index)}" @click="moveUp('pageShow', props.index)"><v-icon>arrow_drop_up</v-icon></v-btn>
+                        <div><v-checkbox hide-details :input-value="typeof props.item.show == 'undefined'" @change="changeShow('pageShow', props.index, $event)"></v-checkbox></div>
+                        <v-btn color="primary" @click="update('pageShow')">Save</v-btn>
+                      </v-layout>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan='2'><q-form-yaml class='my-3' :value="dumpYaml(props.item)" @input="updateYaml('pageShow', props.index, $event)"></q-form-yaml></td>
                   </tr>
                 </template>
               </v-data-table>
@@ -84,6 +108,13 @@ export default {
           expand: false,
           headers: [{text: 'name', sortable: false, width: 120}, {text: '', sortable: false}],
           items: []
+        },
+        pageShow: {
+          create: null,
+          view: null,
+          manager: null,
+          expand: false,
+          headers: [{text: 'name', sortable: false, width: 120}, {text: '', sortable: false}],
         }
       }
     }
@@ -215,12 +246,16 @@ export default {
     load () {
       this.table.list.items = Object.values(this.table.list.view.config.options.components);
       this.table.list.keys = Object.keys(this.table.list.view.config.options.components);
+      this.table.pageShow.items = Object.values(this.table.pageShow.view.config.options.components);
+      this.table.pageShow.keys = Object.keys(this.table.pageShow.view.config.options.components);
     },
   },
   created() {
     this.resolver = new DataResolver();
     this.api = this.resolver.newApiByName('data-view');
     this.table.list.view = this.resolver.getViewByName(this.name + "-resource-index");
+    this.table.pageShow.view = this.resolver.getViewByName(this.name + "-page-show");
+
     this.load();
   }
 }
@@ -228,7 +263,7 @@ export default {
 
 <style>
 .CodeMirror {
-  height: 150px !important
+  height: 250px !important
 }
 
 .theme--light.v-table tbody tr:hover:not(.v-datatable__expand-row) {

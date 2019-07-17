@@ -1,46 +1,20 @@
 <template>
+  <div>
   <component :is="component" :config="manager" v-bind="$attrs">
     <template slot='tabs' slot-scope="scope">
-      <v-tab v-for="(section, key, index) in sections" v-if="hasSection(key)"> {{ key }}</v-tab>
+      <v-tab :key="key" v-for="(component, key, index) in components" v-if="hasComponent(component)"> {{ key }}</v-tab>
       <v-tabs-items>
-        <v-tab-item v-for="(section, key, index) in sections" :transition="false" :reverse-transition="false" v-if="hasSection(key)">
+        <v-tab-item :key="key" v-for="(component, key, index) in components" :transition="false" :reverse-transition="false" v-if="hasComponent(component)">
           <component 
-            v-if="scope.tabs === index"
-            :is="toComponent(section.extends)"
-            :resource="toResource(section, scope.resource)" 
+            :is="toComponent(component.extends)"
+            :resource="toResource(component, scope.resource)" 
             v-bind="$attrs"
             :prefix="manager.name"
-            :options="mergeOptions(options, section.options, scope.resource)"
-            :key="manager.name + '.' + section.key + section.extends"
+            :options="mergeOptions(options, component.options, scope.resource)"
+            :key="manager.name + '.' + component.key + component.extends"
           />
         </v-tab-item>
       </v-tabs-items>
-
-      <v-dialog v-model="settingsActive" width="500">
-        <v-card>
-          <v-card-title class="headline grey lighten-2" primary-title>
-            {{ $t('$quartz.core.settings') }}
-          </v-card-title>
-          <v-card-text>
-            <v-select 
-              :items="listable" 
-              v-model="cols" 
-              :menu-props="{ maxHeight: '400' }" 
-              :label="$t('$quartz.core.columns')" 
-              multiple 
-              @change="updateListable"
-              persistent-hint 
-              item-text="label"
-            ></v-select>
-          </v-card-text>
-        </v-card>
-      </v-dialog> 
-
-      <div class='text-md-right' style='flex-grow: 1;padding: 5px;'>
-        <v-btn @click="settingsActive = true" icon class='icon ma-0'>
-          <v-icon color="primary"  >settings</v-icon>
-        </v-btn>
-      </div>
     </template>
     <template slot='actions' slot-scope="scope">
       <component 
@@ -51,9 +25,13 @@
         v-bind="$attrs"/>
     </template>
   </component>
+
+  <resource-settings :name="manager.data" />
+  </div>
 </template>
 <script>
 
+import ResourceSettings from './ResourceSettings'
 import { DataResolver } from '../app/Services/DataResolver'
 import { Common } from '../mixins/Common'
 import { container, Interceptor } from '@quartz/core'
@@ -67,12 +45,12 @@ export default {
   data() {
     return {
       component: null,
-      sections: [],
-      listable: [],
+      components: [],
       resourceComponents: [],
-      cols: [],
-      settingsActive: false,
     }
+  },
+  components: {
+    ResourceSettings
   },
   created() {
     this.createManagerByName(this.view.config.label)
@@ -81,13 +59,7 @@ export default {
       this.resourceComponents = this.view.config.options.actions.resource
     }
     
-    this.sections = this.view.config.options.sections
-
-    this.listable = _.map(this.sections, (section, key) => {
-      return key
-    });
-
-    this.cols = JSON.parse(container.get('settings').get('app.page-show.' + this.manager.name, JSON.stringify(this.listable)));
+    this.components = this.view.config.options.components
 
     this.component = Interceptor.resolve('pageShowOnRetrieve', {
       manager: this.manager,
@@ -95,14 +67,8 @@ export default {
     }).component
   },
   methods: {
-    getListable() {
-      return container.get('settings');
-    },
-    hasSection(section) {
-      return this.cols.indexOf(section) !== -1;
-    },
-    updateListable() {
-      container.get('settings').store('app.page-show.' + this.manager.name, JSON.stringify(this.cols));
+    hasComponent(component) {
+      return component.show === true || typeof component.show === 'undefined'
     },
     toResource(view, resource) {
       if (view.options && view.options.extractor) {
