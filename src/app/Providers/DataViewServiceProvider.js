@@ -1,12 +1,12 @@
-import { ServiceProvider } from '@railken/quartz-core'
-import { container, ResourceApi } from '@railken/quartz-core'
+import { ServiceProvider } from '@quartz/core'
+import { container, ResourceApi } from '@quartz/core'
 import { DataViewApi } from '../Api/DataViewApi'
 import { DataResolver } from '../Services/DataResolver'
 import _ from 'lodash'
 var yaml = require('js-yaml');
 import { Utils } from '../Helpers/Utils'
 
-import { Attributes, Relations, Manager } from '@railken/quartz-core'
+import { Attributes, Relations, Manager } from '@quartz/core'
 
 export class DataViewServiceProvider extends ServiceProvider {
   register () {

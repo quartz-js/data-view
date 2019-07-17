@@ -28,7 +28,6 @@
                         <v-btn icon v-bind:class="{'hidden': !canMoveUp('list', props.index)}" @click="moveUp('list', props.index)"><v-icon>arrow_drop_up</v-icon></v-btn>
                         <div><v-checkbox hide-details :input-value="typeof props.item.show == 'undefined'" @change="changeShow('list', props.index, $event)"></v-checkbox></div>
                         <v-btn icon @click="remove('list', props.index)"><v-icon color='red'>delete</v-icon></v-btn>
-                        <v-btn icon @click="remove('list', props.index)"><v-icon color='red'>delete</v-icon></v-btn>
                       </v-layout>
                     </td>
                   </tr>

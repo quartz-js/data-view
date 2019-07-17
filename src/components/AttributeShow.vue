@@ -3,7 +3,7 @@
 </template>
 <script>
 
-import { Attributes } from '@railken/quartz-core'
+import { Attributes } from '@quartz/core'
 
 export default {
   props: ['resource', 'manager', 'attributeName', 'attributeOptions', 'errors'],

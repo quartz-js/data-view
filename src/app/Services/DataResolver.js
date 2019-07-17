@@ -1,4 +1,4 @@
-import { container, Attributes, ResourceApi, Manager, Helper, Interceptor } from '@railken/quartz-core'
+import { container, Attributes, ResourceApi, Manager, Helper, Interceptor } from '@quartz/core'
 import { DataViewError } from '../Errors/DataViewError'
 import _ from 'lodash'
 

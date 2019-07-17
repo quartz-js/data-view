@@ -17,7 +17,7 @@
 
 import { Utils } from '../app/Helpers/Utils'
 import { Common } from '../mixins/Common'
-import { Interceptor } from '@railken/quartz-core'
+import { Interceptor } from '@quartz/core'
 import ResourceSettings from './ResourceSettings'
 
 export default {

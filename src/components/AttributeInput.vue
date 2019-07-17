@@ -5,7 +5,7 @@
 </template>
 <script>
 
-import { Attributes, container, HandleResource } from '@railken/quartz-core'
+import { Attributes, container, HandleResource } from '@quartz/core'
 
 export default {
   props: ['manager', 'attributeName', 'attributeOptions', 'errors'],

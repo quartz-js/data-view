@@ -1,6 +1,6 @@
 import { DataResolver } from '../app/Services/DataResolver'
 import { Utils } from '../app/Helpers/Utils'
-import { ResourceLocalization } from '@railken/quartz-core/src/mixins/ResourceLocalization'
+import { ResourceLocalization } from '@quartz/core/src/mixins/ResourceLocalization'
 import _ from 'lodash'
 
 export var Common = {

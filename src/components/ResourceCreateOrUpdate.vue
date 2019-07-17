@@ -8,7 +8,7 @@
 </template>
 <script>
 
-import { HandleResource } from '@railken/quartz-core'
+import { HandleResource } from '@quartz/core'
 import { Common } from '../mixins/Common'
 
 export default {

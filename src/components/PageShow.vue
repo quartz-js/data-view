@@ -56,7 +56,7 @@
 
 import { DataResolver } from '../app/Services/DataResolver'
 import { Common } from '../mixins/Common'
-import { container, Interceptor } from '@railken/quartz-core'
+import { container, Interceptor } from '@quartz/core'
 import _ from 'lodash'
 
 
