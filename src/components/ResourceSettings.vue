@@ -27,12 +27,13 @@
                         <v-btn icon v-bind:class="{'hidden': !canMoveDown('list', props.index)}" @click="moveDown('list', props.index)"><v-icon>arrow_drop_down</v-icon></v-btn>
                         <v-btn icon v-bind:class="{'hidden': !canMoveUp('list', props.index)}" @click="moveUp('list', props.index)"><v-icon>arrow_drop_up</v-icon></v-btn>
                         <div><v-checkbox hide-details :input-value="typeof props.item.show == 'undefined'" @change="changeShow('list', props.index, $event)"></v-checkbox></div>
-                        <v-btn icon @click="remove('list', props.index)"><v-icon color='red'>delete</v-icon></v-btn>
+                        <v-btn dark color="red" @click="remove('list', props.index)">delete</v-btn>
+                        <v-btn color="primary" @click="update('list')">Save</v-btn>
                       </v-layout>
                     </td>
                   </tr>
                   <tr>
-                    <td colspan='2'><q-form-yaml class='my-3' :value="dumpYaml(props.item)" @input="updateYaml(type, $event)"></q-form-yaml></td>
+                    <td colspan='2'><q-form-yaml class='my-3' :value="dumpYaml(props.item)" @input="updateYaml('list', props.index, $event)"></q-form-yaml></td>
                   </tr>
                 </template>
               </v-data-table>
@@ -103,9 +104,10 @@ export default {
       this.update(type);
 
     },
-    updateYaml(type, value)
-    {
-      console.log(value);
+    updateYaml(type, index, $event)
+    { 
+      let key = this.table[type].keys[index];
+      this.table[type].view.config.options.components[key] = this.loadYaml($event);
     },
     create (type)
     {
@@ -127,6 +129,8 @@ export default {
       let array = this.table[type].keys;
 
       array.splice(index, 1);
+
+      this.table[type].view.config.options.components[index].show = value;
 
       this.sortComponentsByKeys(type);
     },

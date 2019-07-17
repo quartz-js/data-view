@@ -202,6 +202,11 @@ export class DataResolver {
 
           manager.addAttribute(attribute);
 
+
+        if (typeof attributeSelected.show !== 'undefined') {
+          attribute.set('show', attributeSelected.show)
+        }
+        
         if (attribute.style.include) {
           attribute.addHook('include', (includes) => {
             includes.push(attribute.style.include);

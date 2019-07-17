@@ -6,7 +6,7 @@
           v-for="attribute in manager.attributes"
           v-if="attribute.fillable"
           v-bind="$attrs"
-          :is="toComponent(attribute.style.extends)" 
+          :is="toComponent(attribute.style.extends ? attribute.style.extends : 'data-view-attribute-input')" 
           :resource="scope.resource"
           :attributeOptions="attribute.style"
           :attributeName="attribute.label"
