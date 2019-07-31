@@ -234,6 +234,9 @@ export default {
       return this.api.update(dataViewId, {
         config: this.dumpYaml(this.table[type].view.config)
       }).then(response => {
+
+        bus.$emit('data-view.updated', response.body.data);
+
         return this.load();
       }).finally(response => {
         this.loading = false;

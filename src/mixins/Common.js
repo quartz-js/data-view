@@ -5,9 +5,10 @@ import _ from 'lodash'
 
 export var Common = {
   mixins: [ResourceLocalization],
-  props: ['view', 'options', 'prefix'],
+  props: ['rawView', 'options', 'prefix'],
   data() {
     return {
+      view: null,
       manager: null
     }
   },
@@ -72,5 +73,25 @@ export var Common = {
     toComponent(str, prefix) {
       return Utils.nameToComponent("data-view-" + str)
     }
+  },
+  created() {
+    this.view = _.cloneDeep(this.rawView)
+
+    var t = this;
+
+    bus.$on('data-view.updated', dataView => {
+      
+      if (!dataView || !this.view) {
+        return;
+      }
+
+      if (dataView.id === this.view.id) {
+        dataView.config = dataView.processed
+        this.manager = null;
+        setTimeout(() => {
+          this.manager = this.newManagerByView(dataView);
+        }, 1)
+      }
+    });
   }
 }
