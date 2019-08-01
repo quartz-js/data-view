@@ -164,10 +164,10 @@ export class DataViewServiceProvider extends ServiceProvider {
           view: null
         }
       },
-      template: `<${Utils.nameToComponent(item.config.extends)} :view='view' v-if='view' v-bind="$attrs"/>`,
+      template: `<${Utils.nameToComponent(item.config.extends)} :rawView='view' v-if='view' v-bind="$attrs"/>`,
       mounted () {
-        this.view = _.cloneDeep(item)
-      }
+        this.view = item
+      },
     })
 
     cont.push(item)
