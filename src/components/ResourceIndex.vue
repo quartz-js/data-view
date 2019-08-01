@@ -12,7 +12,7 @@
 <script>
 
 import { Utils } from '../app/Helpers/Utils'
-import { Common } from '../mixins/Common'
+import { CommonResource } from '../mixins/CommonResource'
 import { Interceptor } from '@quartz/core'
 
 export default {
@@ -23,7 +23,7 @@ export default {
     }
   },
   mixins: [
-    Common
+    CommonResource
   ],
   data() {
     return {

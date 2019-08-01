@@ -12,12 +12,12 @@
 <script>
 
 import { DataResolver } from '../app/Services/DataResolver'
-import { Common } from '../mixins/Common'
+import { CommonPage } from '../mixins/CommonPage'
 import ResourceSettings from './ResourceSettings'
 
 export default {
   mixins: [
-    Common
+    CommonPage
   ],
   components: {
     ResourceSettings

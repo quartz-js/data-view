@@ -76,22 +76,5 @@ export var Common = {
   },
   created() {
     this.view = _.cloneDeep(this.rawView)
-
-    var t = this;
-
-    bus.$on('data-view.updated', dataView => {
-      
-      if (!dataView || !this.view) {
-        return;
-      }
-
-      if (dataView.id === this.view.id) {
-        dataView.config = dataView.processed
-        this.manager = null;
-        setTimeout(() => {
-          this.manager = this.newManagerByView(dataView);
-        }, 1)
-      }
-    });
   }
 }

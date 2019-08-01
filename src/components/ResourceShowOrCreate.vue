@@ -20,11 +20,11 @@
 <script>
 
 import { HandleResource } from '@quartz/core'
-import { Common } from '../mixins/Common'
+import { CommonResource } from '../mixins/CommonResource'
 
 export default {
   mixins: [
-    Common,
+    CommonResource,
     HandleResource
   ],
   methods: {

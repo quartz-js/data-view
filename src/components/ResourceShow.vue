@@ -27,11 +27,11 @@
 <script>
 
 import { Utils } from '../app/Helpers/Utils'
-import { Common } from '../mixins/Common'
+import { CommonResource } from '../mixins/CommonResource'
 
 export default {
   mixins: [
-    Common
+    CommonResource
   ],
   data() {
     return {

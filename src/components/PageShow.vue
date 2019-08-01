@@ -33,24 +33,28 @@
 
 import ResourceSettings from './ResourceSettings'
 import { DataResolver } from '../app/Services/DataResolver'
-import { Common } from '../mixins/Common'
+import { CommonPage } from '../mixins/CommonPage'
 import { container, Interceptor } from '@quartz/core'
 import _ from 'lodash'
 
 
 export default {
   mixins: [
-    Common
+    CommonPage,
   ],
   data() {
     return {
       component: null,
-      components: [],
       resourceComponents: [],
     }
   },
   components: {
     ResourceSettings
+  },
+  computed: {
+    components: function () {
+      return this.view.config.options.components
+    }
   },
   created() {
     this.createManagerByName(this.view.config.label)
@@ -59,8 +63,6 @@ export default {
       this.resourceComponents = this.view.config.options.actions.resource
     }
     
-    this.components = this.view.config.options.components
-
     this.component = Interceptor.resolve('pageShowOnRetrieve', {
       manager: this.manager,
       component: 'q-page-show'
