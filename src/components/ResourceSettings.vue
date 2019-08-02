@@ -8,13 +8,25 @@
           <p class='mt-3'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec tincidunt diam vel ante porttitor porta. Mauris condimentum tortor at nulla tempor scelerisque. Phasellus consectetur magna sed massa congue, quis tempus enim facilisis. Donec a tortor malesuada, imperdiet ipsum ac, fringilla ante.</p>
 
           <v-tabs v-model="tab">
-            <v-tab :key="1">Resource List</v-tab>
-            <v-tab :key="2">Page Show</v-tab>
+            <v-tab :key="1">Resource</v-tab>
+            <v-tab :key="2">Resource List</v-tab>
+            <v-tab :key="3">Resource Create</v-tab>
+            <v-tab :key="4">Resource Update</v-tab>
+            <v-tab :key="5">Page Show</v-tab>
             <v-tab-item :key="1" :transition="false" :reverse-transition="false">
-              <resource-settings-resource-index :name='name + "-resource-index"' />
+              <resource-settings-resource :name='name + "-resource"' />
             </v-tab-item>
             <v-tab-item :key="2" :transition="false" :reverse-transition="false">
-              <resource-settings-page-show :name='name + "-page-show"' />
+              <resource-settings-resource :name='name + "-resource-index"' />
+            </v-tab-item>
+            <v-tab-item :key="3" :transition="false" :reverse-transition="false">
+              <resource-settings-resource :name='name + "-resource-create"' />
+            </v-tab-item>
+            <v-tab-item :key="4" :transition="false" :reverse-transition="false">
+              <resource-settings-resource :name='name + "-resource-update"' />
+            </v-tab-item>
+            <v-tab-item :key="5" :transition="false" :reverse-transition="false">
+              <resource-settings-resource :name='name + "-page-show"' />
             </v-tab-item>
           </v-tabs>
 
@@ -39,15 +51,14 @@
 <script>
 import { Common } from '../mixins/Common'
 import { DataResolver } from '../app/Services/DataResolver'
-import ResourceSettingsResourceIndex from './ResourceSettingsResourceIndex'
-import ResourceSettingsPageShow from './ResourceSettingsPageShow'
+import ResourceSettingsResource from './ResourceSettingsResource'
+
 const yaml = require('js-yaml')
     
 export default {
   mixins: [Common],
   components: {
-    ResourceSettingsResourceIndex,
-    ResourceSettingsPageShow
+    ResourceSettingsResource,
   },
   props: {
     name: {
