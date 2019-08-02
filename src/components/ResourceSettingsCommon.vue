@@ -142,6 +142,8 @@ export default {
 
         bus.$emit('data-view.updated', response.body.data);
 
+        this.resolver.updateViewByName(this.name, response.body.data.processed);
+
         return this.load();
       }).finally(response => {
         this.loading = false;

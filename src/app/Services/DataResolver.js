@@ -349,14 +349,21 @@ export class DataResolver {
     });
   }
 
+  updateViewByName (name, content) {
+    container.set('$quartz.view', container.get('$quartz.views').map(item => {
+      if (item.name === name) {
+        item.config = content
+      }
+      return item;
+    }))
+  }
   getViewByName (name) {
     let view = _.cloneDeep(container.get('$quartz.views').find(item => {
       return item.name === name
     }))
 
     if (!view) {
-
-        throw new DataViewError(`Cannot find view with name: ${name}`)
+      throw new DataViewError(`Cannot find view with name: ${name}`)
     }
 
     return view;

@@ -12,9 +12,12 @@ export var CommonResource = {
         return;
       }
 
+      if (this.view.name.includes(dataView.name)) {
+        dataView = this.view;
+      }
+
       if (dataView.id === this.view.id) {
         dataView.config = dataView.processed
-
         this.manager = null;
         setTimeout(() => {
           this.manager = this.newManagerByView(dataView);
