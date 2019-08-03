@@ -12,7 +12,7 @@ export var CommonResource = {
         return;
       }
 
-      if (this.view.name.includes(dataView.name)) {
+      if (this.view.name.includes(dataView.name) && dataView.id !== this.view.id) {
         dataView = this.view;
       }
 

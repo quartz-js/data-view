@@ -12,7 +12,8 @@
             <v-tab :key="2">Resource List</v-tab>
             <v-tab :key="3">Resource Create</v-tab>
             <v-tab :key="4">Resource Update</v-tab>
-            <v-tab :key="5">Page Show</v-tab>
+            <v-tab :key="5">Resource Show</v-tab>
+            <v-tab :key="6">Page Show</v-tab>
             <v-tab-item :key="1" :transition="false" :reverse-transition="false">
               <resource-settings-resource :name='name + "-resource"' />
             </v-tab-item>
@@ -26,6 +27,9 @@
               <resource-settings-resource :name='name + "-resource-update"' />
             </v-tab-item>
             <v-tab-item :key="5" :transition="false" :reverse-transition="false">
+              <resource-settings-resource :name='name + "-resource-show"' />
+            </v-tab-item>
+            <v-tab-item :key="6" :transition="false" :reverse-transition="false">
               <resource-settings-resource :name='name + "-page-show"' />
             </v-tab-item>
           </v-tabs>

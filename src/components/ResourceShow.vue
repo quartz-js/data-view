@@ -1,5 +1,5 @@
 <template>
-  <q-resource-show v-bind="$attrs" :config="manager">
+  <q-resource-show v-bind="$attrs" :config="manager" v-if="manager">
     <template slot='show' slot-scope="scope">
       <component 
         v-for="attribute in manager.attributes"
