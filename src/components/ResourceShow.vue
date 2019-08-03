@@ -9,7 +9,7 @@
           :is="toComponent(attribute.style.extends ? attribute.style.extends : 'data-view-attribute-show')" 
           :resource="scope.resource"
           :attributeOptions="attribute.style"
-          :attributeName="attribute.label"
+          :attributeName="attribute.name"
           :errors="scope.errors"
           :manager="manager"
           />

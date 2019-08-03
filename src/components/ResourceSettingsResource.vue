@@ -30,6 +30,7 @@
             @change="changeText(['options', 'size'], props.index, $event)"
             ticks
           ></v-slider>
+          <v-text-field :label="$t('$quartz.data-view.label')" :value="props.item.options && props.item.options.label ? props.item.options.label : table.keys[props.index]" @change="changeText(['options', 'label'], props.index, $event)" />
           <v-checkbox hide-details :label="$t('$quartz.data-view.show')" :input-value="typeof props.item.show == 'undefined'" @change="changeBoolean('show', props.index, $event)" />
 
           <q-form-yaml class='my-3' :value="dumpYaml(props.item)" @input="updateYaml(props.index, $event)"></q-form-yaml>

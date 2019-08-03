@@ -101,6 +101,10 @@ export class DataResolver {
         .set('hidden', attributeSchema.hidden)
         .set('style', _.merge({extends: attributeSelected.extends}, attributeSelected.options))
           
+      if (attributeSelected.options.label) {
+        attribute.set('label', attributeSelected.options.label);
+      }
+
       if (attributeSelected.fixed) {
         attribute.set('fixed', (resource) => {
           return attributeSelected.fixed;

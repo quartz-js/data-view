@@ -2,7 +2,8 @@
   "$quartz": {
     "data-view": {
       "show": "Show",
-      "size": "Size"
+      "size": "Size",
+      "label": "Label"
     }
   }
 }
