@@ -1,32 +1,31 @@
 <template>
   <div>
-  <component :is="component" :config="manager" v-bind="$attrs">
-    <template slot='tabs' slot-scope="scope">
-      <v-tab :key="key" v-for="(component, key, index) in components" v-if="hasComponent(component)"> {{ key }}</v-tab>
-      <v-tabs-items>
-        <v-tab-item :key="key" v-for="(component, key, index) in components" :transition="false" :reverse-transition="false" v-if="hasComponent(component)">
-          <component 
-            :is="toComponent(component.extends)"
-            :resource="toResource(component, scope.resource)" 
-            v-bind="$attrs"
-            :prefix="manager.name"
-            :options="mergeOptions(options, component.options, scope.resource)"
-            :key="manager.name + '.' + component.key + component.extends"
-          />
-        </v-tab-item>
-      </v-tabs-items>
-    </template>
-    <template slot='actions' slot-scope="scope">
-      <component 
-        v-for="component in resourceComponents" 
-        :is="toComponent(component.extends)" 
-        :resource="scope.resource" 
-        :options="mergeOptions(options, component.options)" 
-        v-bind="$attrs"/>
-    </template>
-  </component>
-
-  <resource-settings :name="manager.data" />
+    <component :is="component" :config="manager" v-bind="$attrs" v-if="view">
+      <template slot='tabs' slot-scope="scope">
+        <v-tab :key="key" v-for="(component, key, index) in components" v-if="hasComponent(component)"> {{ key }}</v-tab>
+        <v-tabs-items>
+          <v-tab-item :key="key" v-for="(component, key, index) in components" :transition="false" :reverse-transition="false" v-if="hasComponent(component)">
+            <component 
+              :is="toComponent(component.extends)"
+              :resource="toResource(component, scope.resource)" 
+              v-bind="$attrs"
+              :prefix="manager.name"
+              :options="mergeOptions(options, component.options, scope.resource)"
+              :key="manager.name + '.' + component.key + component.extends"
+            />
+          </v-tab-item>
+        </v-tabs-items>
+      </template>
+      <template slot='actions' slot-scope="scope">
+        <component 
+          v-for="component in resourceComponents" 
+          :is="toComponent(component.extends)" 
+          :resource="scope.resource" 
+          :options="mergeOptions(options, component.options)" 
+          v-bind="$attrs"/>
+      </template>
+    </component>
+    <resource-settings :name="manager.data" />
   </div>
 </template>
 <script>

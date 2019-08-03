@@ -16,7 +16,12 @@ export var CommonPage = {
 
         dataView.config = dataView.processed
 
-        this.view = dataView;
+        this.view = null;
+
+        setTimeout(i => {
+          this.view = dataView;
+        }, 1)
+        
       }
     });
   }
