@@ -18,7 +18,19 @@
       </tr>
       <tr v-if="canExpand(props.index)" v-bind:class="{'disable': loading}">
         <td colspan='2' class='py-4'>
-          <v-checkbox hide-details :label="$t('$quartz.data-view.show')" :input-value="typeof props.item.show == 'undefined'" @change="changeShow(props.index, $event)"></v-checkbox>
+          <v-slider
+            class="mt-3"
+            :label="$t('$quartz.data-view.size')" 
+            :value="props.item.options ? props.item.options.size : 1"
+            step="1"
+            min="0"
+            max="12"
+            thumb-size="22"
+            thumb-label="always"
+            @change="changeText(['options', 'size'], props.index, $event)"
+            ticks
+          ></v-slider>
+          <v-checkbox hide-details :label="$t('$quartz.data-view.show')" :input-value="typeof props.item.show == 'undefined'" @change="changeBoolean('show', props.index, $event)" />
 
           <q-form-yaml class='my-3' :value="dumpYaml(props.item)" @input="updateYaml(props.index, $event)"></q-form-yaml>
 

@@ -1,7 +1,8 @@
 {
   "$quartz": {
     "data-view": {
-      "show": "Mostra"
+      "show": "Mostra",
+      "size": "Size"
     }
   }
 }

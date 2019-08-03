@@ -30,7 +30,7 @@
               <resource-settings-resource :name='name + "-resource-show"' />
             </v-tab-item>
             <v-tab-item :key="6" :transition="false" :reverse-transition="false">
-              <resource-settings-resource :name='name + "-page-show"' />
+              <resource-settings-resource :name='name + "-page-show"' :size="false" />
             </v-tab-item>
           </v-tabs>
 

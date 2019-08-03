@@ -3,12 +3,17 @@ import { Common } from '../mixins/Common'
 import { DataResolver } from '../app/Services/DataResolver'
 import { mixins } from '@quartz/core'
 const yaml = require('js-yaml')
-    
+import _ from 'lodash'
+
 export default {
   mixins: [Common, mixins.Expandable],
   props: {
     name: {
       type: String
+    },
+    size: {
+      type: Boolean,
+      default: true,
     }
   },
   data() {
@@ -108,7 +113,7 @@ export default {
 
       this.sortComponentsByKeys();
     },
-    changeShow(index, value)
+    changeBoolean(field, index, value)
     {
       if (this.loading) {
         return;
@@ -117,9 +122,29 @@ export default {
       index = this.table.keys[index];
 
       if (value === true) {
-        delete this.table.view.config.options.components[index].show
+        delete this.table.view.config.options.components[index][field]
       } else {
-        this.table.view.config.options.components[index].show = value;
+        this.table.view.config.options.components[index][field] = value;
+      }
+
+      this.update();
+    },
+    changeText(fields, index, value)
+    {
+      if (this.loading) {
+        return;
+      }
+
+      index = this.table.keys[index];
+
+      if (parseInt(value) == value) {
+        value = parseInt(value)
+      }
+
+      if (value === '') {
+        _.unset(this.table.view.config.options.components[index], fields, value)
+      } else {
+        _.set(this.table.view.config.options.components[index], fields, value)
       }
 
       this.update();
