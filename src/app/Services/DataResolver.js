@@ -78,6 +78,13 @@ export class DataResolver {
     }
   }
 
+  resolveCommon(base, selected, path, name)
+  {
+      if (_.get(selected, path)) {
+        base.set(name, path);
+      }
+  }
+
   resolveAttribute(name, attributeName, attributeSelected, manager, options)
   {
       let attributeSchema = this.findAttributeByName(name, attributeSelected.name)
@@ -98,20 +105,17 @@ export class DataResolver {
         .set('fillable', attributeSchema.fillable)
         .set('required', attributeSchema.required)
         .set('unique', attributeSchema.unique)
-        .set('hidden', attributeSchema.hidden)
+        .set('show', !attributeSchema.hide)
         .set('style', _.merge({extends: attributeSelected.extends}, attributeSelected.options))
           
-      if (attributeSelected.options.label) {
-        attribute.set('label', attributeSelected.options.label);
-      }
+
+      attributeSelected.options.label && attribute.set('label', attributeSelected.options.label);
+      attributeSelected.options.hide && attribute.set('show', !attributeSelected.options.hide);
 
       if (attributeSelected.fixed) {
         attribute.set('fixed', (resource) => {
           return attributeSelected.fixed;
         })
-      }
-      if (typeof attributeSelected.show !== 'undefined') {
-        attribute.set('show', attributeSelected.show)
       }
 
       if (attributeSelected.options && attributeSelected.options.default) {
@@ -206,10 +210,8 @@ export class DataResolver {
 
           manager.addAttribute(attribute);
 
-
-        if (typeof attributeSelected.show !== 'undefined') {
-          attribute.set('show', attributeSelected.show)
-        }
+          attributeSelected.options.label && attribute.set('label', attributeSelected.options.label);
+          attributeSelected.options.hide && attribute.set('show', !attributeSelected.options.hide);
         
         if (attribute.style.include) {
           attribute.addHook('include', (includes) => {
@@ -268,6 +270,7 @@ export class DataResolver {
     // Create a list of all available managers and components
 
     let keys = [];
+
 
     if (attributeSchema.type === 'BelongsTo') {
       keys = [relation.data]
@@ -383,6 +386,10 @@ export class DataResolver {
     let viewName = parts[0]  + '-resource';
 
     let view = this.getViewByName(viewName);
+
+    if (attribute.options === null) {
+      attribute.options = {}
+    }
 
     attribute = _.merge(_.get(view.config.options, parts.slice(1)), attribute)
 

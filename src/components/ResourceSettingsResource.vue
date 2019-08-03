@@ -21,7 +21,7 @@
           <v-slider
             class="mt-3"
             :label="$t('$quartz.data-view.size')" 
-            :value="props.item.options ? props.item.options.size : 1"
+            :value="props.item.options && props.item.options.size ? props.item.options.size : 12"
             step="1"
             min="0"
             max="12"
@@ -31,7 +31,7 @@
             ticks
           ></v-slider>
           <v-text-field :label="$t('$quartz.data-view.label')" :value="props.item.options && props.item.options.label ? props.item.options.label : table.keys[props.index]" @change="changeText(['options', 'label'], props.index, $event)" />
-          <v-checkbox hide-details :label="$t('$quartz.data-view.show')" :input-value="typeof props.item.show == 'undefined'" @change="changeBoolean('show', props.index, $event)" />
+          <v-checkbox hide-details :label="$t('$quartz.data-view.hide')" :input-value="props.item.options && props.item.options.hide" @change="changeText(['options', 'hide'], props.index, $event)" />
 
           <q-form-yaml class='my-3' :value="dumpYaml(props.item)" @input="updateYaml(props.index, $event)"></q-form-yaml>
 

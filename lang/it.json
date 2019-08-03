@@ -1,7 +1,7 @@
 {
   "$quartz": {
     "data-view": {
-      "show": "Mostra",
+      "hide": "Nascondi",
       "size": "Size",
       "label": "Label"
     }

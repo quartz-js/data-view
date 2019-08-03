@@ -113,22 +113,6 @@ export default {
 
       this.sortComponentsByKeys();
     },
-    changeBoolean(field, index, value)
-    {
-      if (this.loading) {
-        return;
-      }
-
-      index = this.table.keys[index];
-
-      if (value === true) {
-        delete this.table.view.config.options.components[index][field]
-      } else {
-        this.table.view.config.options.components[index][field] = value;
-      }
-
-      this.update();
-    },
     changeText(fields, index, value)
     {
       if (this.loading) {
@@ -141,7 +125,9 @@ export default {
         value = parseInt(value)
       }
 
-      if (value === '') {
+      console.log(value);
+
+      if (value === '' || value === false) {
         _.unset(this.table.view.config.options.components[index], fields, value)
       } else {
         _.set(this.table.view.config.options.components[index], fields, value)
