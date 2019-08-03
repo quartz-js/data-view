@@ -4,7 +4,7 @@
       <v-layout row wrap>
         <component 
           v-for="attribute in manager.attributes"
-          v-if="attribute.fillable"
+          v-if="attribute.fillable && attribute.show"
           v-bind="$attrs"
           :is="toComponent(attribute.style.extends ? attribute.style.extends : 'data-view-attribute-input')" 
           :resource="scope.resource"
