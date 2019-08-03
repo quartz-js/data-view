@@ -1,5 +1,7 @@
 <template>
-  <component :is="getComponent()" :resource="resource" :attribute="getAttribute()" :errors="errors"/>
+  <v-flex v-bind="getProps()">
+    <component :is="getComponent()" :resource="resource" :attribute="getAttribute()" :errors="errors"/>
+  </v-flex>
 </template>
 <script>
 
@@ -8,6 +10,13 @@ import { Attributes } from '@quartz/core'
 export default {
   props: ['resource', 'manager', 'attributeName', 'attributeOptions', 'errors'],
   methods: {
+    getProps () {
+      let obj = {};
+
+      obj[`xs${ this.getAttribute().style.size }`] = true;
+
+      return obj;
+    },
     // Change based on Attribute Class
     getComponent() {
       let attribute = this.getAttribute().getClassName()
