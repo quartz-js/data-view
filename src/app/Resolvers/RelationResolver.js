@@ -111,9 +111,17 @@ export class RelationResolver extends Resolver
     })
 
     keys.map(key => {
+
+      if (attribute.view.options.query.include) {
+        attribute.instance.addHook('include', (includes) => {
+          includes.push(attribute.view.options.query.include.split(",").map(i => { return attribute.instance.name + "." + i}));
+          return Promise.resolve(includes)
+        })
+      }
+
       attribute.instance.addRelationable({
         query: {
-          include: attribute.view.options.query.include,
+          include: attribute.view.options.query.include ? attribute.view.options.query.include.split(",") : [],
           template: attribute.view.options.query.template
         },
         label: {

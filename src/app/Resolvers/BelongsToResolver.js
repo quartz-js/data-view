@@ -87,9 +87,16 @@ export class BelongsToResolver extends AttributeResolver
 
       let view = this.dictionary.getViewByName(`${key}-resource`);
       
+      if (attribute.view.options[key].query.include) {
+        attribute.instance.addHook('include', (includes) => {
+          includes.push(attribute.view.options[key].query.include.split(",").map(i => { return attribute.instance.name + "." + i}));
+          return Promise.resolve(includes)
+        })
+      }
+
       attribute.instance.addRelationable({
         query: {
-          include: attribute.view.options[key].query.include,
+          include: attribute.view.options[key].query.include ? attribute.view.options[key].query.include.split(",") : [],
           template: attribute.view.options[key].query.template
         },
         label: {
