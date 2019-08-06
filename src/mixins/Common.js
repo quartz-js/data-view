@@ -1,4 +1,5 @@
 import { DataResolver } from '../app/Services/DataResolver'
+import { Dictionary } from '../app/Services/Dictionary'
 import { Utils } from '../app/Helpers/Utils'
 import { ResourceLocalization } from '@quartz/core/src/mixins/ResourceLocalization'
 import _ from 'lodash'
@@ -53,7 +54,7 @@ export var Common = {
     },
     createManagerByName(name) {
       this.view.config.options = this.mergeOptions(this.view.config.options, this.options)
-      this.manager = this.newManagerByView(new DataResolver().getViewByName(name + "-resource"));
+      this.manager = this.newManagerByView(new Dictionary().getViewByName(name + "-resource"));
     },
     getKey (view) {
       this.manager.name + this.toComponent(str)

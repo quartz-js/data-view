@@ -1,6 +1,6 @@
 <script>
 import { Common } from '../mixins/Common'
-import { DataResolver } from '../app/Services/DataResolver'
+import { Dictionary } from '../app/Services/Dictionary'
 import { mixins } from '@quartz/core'
 const yaml = require('js-yaml')
 import _ from 'lodash'
@@ -172,9 +172,9 @@ export default {
     },
   },
   created() {
-    this.resolver = new DataResolver();
-    this.api = this.resolver.newApiByName('data-view');
-    this.table.view = this.resolver.getViewByName(this.name);
+    this.dictionary = new Dictionary();
+    this.api = this.dictionary.newApiByName('data-view');
+    this.table.view = this.dictionary.getViewByName(this.name);
     this.load();
   }
 }

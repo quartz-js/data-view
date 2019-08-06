@@ -2,6 +2,7 @@ import { ServiceProvider } from '@quartz/core'
 import { container, ResourceApi } from '@quartz/core'
 import { DataViewApi } from '../Api/DataViewApi'
 import { DataResolver } from '../Services/DataResolver'
+import { Dictionary } from '../Services/Dictionary'
 import _ from 'lodash'
 var yaml = require('js-yaml');
 import { Utils } from '../Helpers/Utils'
@@ -59,11 +60,11 @@ export class DataViewServiceProvider extends ServiceProvider {
     }
 
     let api = new DataViewApi(container.get('settings').get('language', 'en'));
-    let resolver = new DataResolver();
+    let dictionary = new Dictionary();
     return api.admin().then(response => {
       let lang = container.get('settings').get('language', 'en')
       this.addLang({[lang]: {"$quartz": { data: response.body.lang}}})
-      return resolver.addData(JSON.parse(response.bodyText).data);
+      return dictionary.addData(JSON.parse(response.bodyText).data);
     }).then(response => {
 
       container.set('$quartz.view.components', []);
@@ -73,7 +74,7 @@ export class DataViewServiceProvider extends ServiceProvider {
       return api.index({query: '', show: 9999}).then(response => {
 
 
-        resolver.addViews(response.body.data);
+        dictionary.addViews(response.body.data);
 
         response.body.data.map(item => {
 
