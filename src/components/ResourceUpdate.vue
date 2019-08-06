@@ -1,7 +1,7 @@
 <template>
   <q-resource-edit v-bind="$attrs" :config="manager">
     <template slot='edit' slot-scope="scope">
-      <v-layout row wrap>
+      <v-layout row wrap align-end>
         <component 
           v-for="attribute in manager.attributes"
           v-if="attribute.fillable && attribute.show"
