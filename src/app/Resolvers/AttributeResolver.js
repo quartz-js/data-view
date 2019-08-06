@@ -37,10 +37,13 @@ export class AttributeResolver extends Resolver
       .set('show', !attribute.schema.hide)
       .set('style', _.merge({extends: attribute.view.extends}, attribute.view.options))
         
-    attribute.view.fixed && attribute.instance.set('fixed', (resource) => { 
+    attribute.view.fixed && attribute.instance.set('fixed', (resource) => {
       return attribute.view.fixed; 
     })
 
+    attribute.schema.default !== null && attribute.instance.set('default', (resource) => { 
+      return attribute.schema.default
+    })
     attribute.view.options.label && attribute.instance.set('label', attribute.view.options.label);
     attribute.view.options.hide && attribute.instance.set('show', !attribute.view.options.hide);
 
