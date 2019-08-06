@@ -37,9 +37,6 @@ export class AttributeResolver extends Resolver
       .set('show', !attribute.schema.hide)
       .set('style', _.merge({extends: attribute.view.extends}, attribute.view.options))
         
-    attribute.view.fixed && attribute.instance.set('fixed', (resource) => {
-      return attribute.view.fixed; 
-    })
 
     attribute.schema.default !== null && attribute.instance.set('default', (resource) => { 
       return attribute.schema.default
@@ -52,6 +49,10 @@ export class AttributeResolver extends Resolver
     })
 
     data.manager.addAttribute(attribute.instance);
+    
+    attribute.view.fixed && attribute.instance.setFixed((resource) => {
+      return attribute.view.fixed; 
+    })
 
     return attribute;
   }

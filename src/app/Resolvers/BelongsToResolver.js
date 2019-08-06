@@ -17,9 +17,9 @@ export class BelongsToResolver extends AttributeResolver
     }
 
     if (!options.query && !options.ignoreTree) {
-      if (manager.descriptor.tree && manager.descriptor.tree.parent === attribute.column) {
+      if (manager.descriptor.tree && manager.descriptor.tree.parent === attribute.instance.column) {
         if (attribute.instance.fixed(null) === undefined) {
-          attribute.instance.set('fixed', () => {
+          attribute.instance.setFixed(() => {
             return null;
           });
         }
