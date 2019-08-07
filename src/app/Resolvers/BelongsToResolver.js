@@ -107,7 +107,7 @@ export class BelongsToResolver extends AttributeResolver
         manager: (resource) => {
 
           let manager = (new DataResolver).createManager(view, {
-            ignoreTree: attribute.instance.style.query
+            ignoreTree: attribute.view.options[key].query.template
           });
 
           return manager

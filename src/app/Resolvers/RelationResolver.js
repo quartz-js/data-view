@@ -25,9 +25,15 @@ export class RelationResolver extends Resolver
       throw new DataViewError(`Cannot find Relation in Schema ${name}:${attribute.view.name}`)
     }
 
-    if (relationSchema.type !== 'MorphToMany' && relationSchema.type === 'BelongsToMany') {
+    if (relationSchema.type !== 'MorphToMany' && relationSchema.type !== 'BelongsToMany') {
       return attribute
     }
+
+    if (!attribute.view.options.query) {
+      console.warn(`[Data-View] Missing parameter options.query in ${data.view.name}:${relationName}`)
+      return attribute;
+    }
+
 
     if (!relationSchema.intermediate) {
       return attribute;
@@ -109,7 +115,7 @@ export class RelationResolver extends Resolver
     attribute.instance.setRelationableSwitcher(resource => {
       return relationSchema.data
     })
-
+    
     keys.map(key => {
 
       if (attribute.view.options.query.include) {
@@ -133,6 +139,8 @@ export class RelationResolver extends Resolver
 
         }
       })
+
+
     })
 
     return attribute;
