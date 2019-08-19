@@ -47,7 +47,6 @@ export class RelationResolver extends Resolver
 
     let scopes = _.clone(relationSchema.scope.slice(1));
 
-
     let view = this.dictionary.getViewByName(`${relationSchema.data}-resource`);
 
     let include = [];

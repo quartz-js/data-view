@@ -2,17 +2,17 @@
   <v-data-table
     :headers="table.headers"
     :items="table.items"
-    hide-actions
+    hide-default-footer
   >
     <template v-slot:items="props">
       <tr v-bind:class="{'disable': typeof props.item.show !== 'undefined'}">
         <td>{{ table.keys[props.index] }}</td>
-        <td class="text-xs-right">
+        <td class="text-right">
           <v-layout align-center>
-            <span v-if="canExpand(props.index)" @click="changeStatusExpandable(props.index, false)"><v-btn color="primary" flat icon><i class="fas fa-eye"></i></v-btn></span>
-            <span class='disable' v-if="!canExpand(props.index)" @click="changeStatusExpandable(props.index, true)"><v-btn color="primary" flat icon><i class="fas fa-eye-slash"></i></v-btn></span>
-            <v-btn icon v-bind:class="{'hidden': !canMoveDown(props.index)}" @click="moveDown(props.index)"><v-icon>arrow_drop_down</v-icon></v-btn>
-            <v-btn icon v-bind:class="{'hidden': !canMoveUp(props.index)}" @click="moveUp(props.index)"><v-icon>arrow_drop_up</v-icon></v-btn>
+            <span v-if="canExpand(props.index)" @click="changeStatusExpandable(props.index, false)"><q-btn color="primary" flat icon><i class="fas fa-eye"></i></q-btn></span>
+            <span class='disable' v-if="!canExpand(props.index)" @click="changeStatusExpandable(props.index, true)"><q-btn color="primary" flat icon><i class="fas fa-eye-slash"></i></q-btn></span>
+            <q-btn icon v-bind:class="{'hidden': !canMoveDown(props.index)}" @click="moveDown(props.index)"><v-icon>arrow_drop_down</v-icon></q-btn>
+            <q-btn icon v-bind:class="{'hidden': !canMoveUp(props.index)}" @click="moveUp(props.index)"><v-icon>arrow_drop_up</v-icon></q-btn>
           </v-layout>
         </td>
       </tr>
@@ -35,8 +35,8 @@
 
           <q-form-yaml class='my-3' :value="dumpYaml(props.item)" @input="updateYaml(props.index, $event)"></q-form-yaml>
 
-          <v-btn dark color="red" @click="remove(props.index)" :loading="loading">{{ $t('$quartz.core.remove') }}</v-btn>
-          <v-btn color="primary" @click="update()" :loading="loading">{{ $t('$quartz.core.save') }}</v-btn>
+          <q-btn color="red" @click="remove(props.index)" :loading="loading">{{ $t('$quartz.core.remove') }}</q-btn>
+          <q-btn color="primary" @click="update()" :loading="loading">{{ $t('$quartz.core.save') }}</q-btn>
         </td>
       </tr>
     </template>

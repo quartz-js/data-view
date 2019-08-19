@@ -14,25 +14,25 @@ export class DataViewServiceProvider extends ServiceProvider {
 
     container.set('$quartz.attributes', _.merge(Attributes, Relations));
     container.set('$quartz.attributeResolvers', {
-      'TextAttribute': 'q-text',
-      'LongTextAttribute': 'q-textarea',
-      'EmailAttribute': 'q-text',
+      'TextAttribute': 'q-attr-text',
+      'LongTextAttribute': 'q-attr-textarea',
+      'EmailAttribute': 'q-attr-text',
       'PasswordAttribute': 'q-secret',
-      'BooleanAttribute': 'q-switch',
-      'EnumAttribute': 'q-select',
-      'YamlAttribute': 'q-yaml',
-      'HtmlAttribute': 'q-html',
-      'DateTimeAttribute': 'q-datetime',
-      'BelongsToAttribute': 'q-belongs-to',
-      'MorphToAttribute': 'q-morph-to',
-      'NumberAttribute': 'q-text',
-      'ClassNameAttribute': 'q-select',
-      'FileAttribute': 'q-file',
-      'UuidAttribute': 'q-text',
-      'MorphToMany': 'q-morph-to-many',
-      'BelongsToMany': 'q-belongs-to-many',
-      'ObjectAttribute': 'q-json',
-      'HtmlAttribute': 'q-html',
+      'BooleanAttribute': 'q-attr-switch',
+      'EnumAttribute': 'q-attr-select',
+      'YamlAttribute': 'q-attr-yaml',
+      'HtmlAttribute': 'q-attr-html',
+      'DateTimeAttribute': 'q-attr-datetime',
+      'BelongsToAttribute': 'q-attr-belongs-to',
+      'MorphToAttribute': 'q-attr-morph-to',
+      'NumberAttribute': 'q-attr-text',
+      'ClassNameAttribute': 'q-attr-select',
+      'FileAttribute': 'q-attr-file',
+      'UuidAttribute': 'q-attr-text',
+      'MorphToMany': 'q-attr-morph-to-many',
+      'BelongsToMany': 'q-attr-belongs-to-many',
+      'ObjectAttribute': 'q-attr-json',
+      'HtmlAttribute': 'q-attr-html',
     });
 
     this.registerComponent("DataViewPageShow", require('../../components/PageShow').default)
@@ -59,30 +59,37 @@ export class DataViewServiceProvider extends ServiceProvider {
       return;
     }
 
-    let api = new DataViewApi(container.get('settings').get('language', 'en'));
-    let dictionary = new Dictionary();
-    return api.admin().then(response => {
+    if (container.get('config').app.websocket.url) {
+      window.Echo.channel('mapper').listen('.update', (e) => {
+        this.reload(`name ct "${e.model}" and type eq 'component'`);
+      })
+    }
+
+    container.set('$quartz.view.components', []);
+    container.set('$quartz.view.services', []);
+    container.set('$quartz.view.routes', []);
+
+    return this.reload('')
+
+  }
+
+  reload (query) {
+
+    this.api = new DataViewApi(container.get('settings').get('language', 'en'));
+    this.dictionary = new Dictionary();
+
+    return this.api.admin().then(response => {
       let lang = container.get('settings').get('language', 'en')
       this.addLang({[lang]: {"$quartz": { data: response.body.lang}}})
-      return dictionary.addData(JSON.parse(response.bodyText).data);
+      return this.dictionary.addData(JSON.parse(response.bodyText).data);
     }).then(response => {
+      return this.api.index({query: query, show: 9999}).then(response => {
 
-      container.set('$quartz.view.components', []);
-      container.set('$quartz.view.services', []);
-      container.set('$quartz.view.routes', []);
-
-      return api.index({query: '', show: 9999}).then(response => {
+        let views = this.dictionary.addViews(response.body.data);
 
 
-        dictionary.addViews(response.body.data);
+        _.map(views, item => {
 
-        response.body.data.map(item => {
-
-
-          item.priority = 1;
-          item.config = item.processed
-
-          item = this.parseItemDataView(item)
 
           if (item.type === 'component') {
             this.registerDataViewComponent(item);
@@ -124,36 +131,6 @@ export class DataViewServiceProvider extends ServiceProvider {
     //
   }
 
-  onRegisterDataView (item) {
-    if (item.config.extends === 'data-view-resource-show') {
-
-      let data = item.config.options.data;
-
-      this.registerDataViewComponent({
-        name: data + '-resource-create-or-update',
-        config: {
-          label: item.config.label,
-          icon: item.config.icon,
-          extends: 'data-view-resource-create-or-update',
-          permissions: [data + '.create',data + '.update'],
-          update: data + '-resource-update',
-          create: data + '-resource-create'
-        }
-      });
-      this.registerDataViewComponent({
-        name: data + '-resource-show-or-create',
-        config: {
-          label: item.config.label,
-          icon: item.config.icon,
-          extends: 'data-view-resource-show-or-create',
-          permissions: [data + '.show',data + '.create',data + '.update'],
-          show: data + '-resource-show',
-          create: data + '-resource-create-or-update'
-        }
-      });
-    }
-  }
-
   registerDataViewComponent(item) {
 
     let cont = container.get('$quartz.view.components');
@@ -161,9 +138,7 @@ export class DataViewServiceProvider extends ServiceProvider {
     if (!item.config.extends) {
       return;
     }
-
-    this.onRegisterDataView(item);
-
+    
     this.registerComponent(Utils.nameToComponent('data-view-' + item.name), {
       data() {
         return {
@@ -172,29 +147,18 @@ export class DataViewServiceProvider extends ServiceProvider {
       },
       template: `<${Utils.nameToComponent(item.config.extends)} :rawView='view' v-if='view' v-bind="$attrs"/>`,
       mounted () {
-        this.view = item
+        this.view = (new Dictionary).getViewByName(item.name)
       },
     })
 
-    cont.push(item)
-  }
+    let index = cont.findIndex(i => { return i.name === item.name})
 
-  parseItemDataView (item) {
-
-    if (item.config.icon) {
-      item.config.icon = this.parseUrlResource(item.config.icon)
+    if (index !== -1) {
+      cont[index] = item;
+    } else {
+      cont.push(item)
     }
 
-    return item
-  }
-
-  parseUrlResource (url) {
-    try {
-      new URL(url)
-
-      return url;
-    } catch (e) {
-      return new URL(container.get('config').app.api.url).origin + url
-    }
+    return item;
   }
 }

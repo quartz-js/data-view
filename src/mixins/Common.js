@@ -61,7 +61,7 @@ export var Common = {
     },
     newManagerByView(view) {
       let resolver = new DataResolver();
-
+      
       let manager = resolver.createManager(view);
 
       if (this.prefix) {

@@ -4,9 +4,83 @@ import { DataViewError } from '../Errors/DataViewError'
 
 export class Dictionary {
 
-
   addViews (views) {
-    container.set('$quartz.views', views);
+
+    views = this.onParseDataViews(views);
+
+    views = _.map(views, item => {
+      return this.parseItemDataView(item);
+    })
+
+    views = _.mapKeys(views, (val, key) => {
+      return val.name;
+    })
+
+    container.set('$quartz.views', _.assignIn(container.get('$quartz.views', {}), views));
+
+    return container.get('$quartz.views');
+  }
+
+  onParseDataViews (items) {
+
+    _.map(items, (item) => {
+      if (item.processed.extends === 'data-view-resource-show') {
+
+        let data = item.processed.options.data;
+        
+        items.push({
+          name: data + '-resource-create-or-update',
+          type: 'component',
+          processed: {
+            label: item.processed.label,
+            icon: item.processed.icon,
+            extends: 'data-view-resource-create-or-update',
+            permissions: [data + '.create',data + '.update'],
+            update: data + '-resource-update',
+            create: data + '-resource-create'
+          }
+        });
+
+        items.push({
+          name: data + '-resource-show-or-create',
+          type: 'component',
+          processed: {
+            label: item.processed.label,
+            icon: item.processed.icon,
+            extends: 'data-view-resource-show-or-create',
+            permissions: [data + '.show',data + '.create',data + '.update'],
+            show: data + '-resource-show',
+            create: data + '-resource-create-or-update'
+          }
+        });
+      }
+    })
+
+
+    return items;
+  }
+
+
+  parseItemDataView (item) {
+
+    item.priority = 1;
+    item.config = item.processed
+
+    if (item.config.icon) {
+      item.config.icon = this.parseUrlResource(item.config.icon)
+    }
+
+    return item
+  }
+
+  parseUrlResource (url) {
+    try {
+      new URL(url)
+
+      return url;
+    } catch (e) {
+      return new URL(container.get('config').app.api.url).origin + url
+    }
   }
 
   addData (data) {
@@ -14,23 +88,16 @@ export class Dictionary {
   }
 
   updateViewByName (name, content) {
-    container.set('$quartz.view', container.get('$quartz.views').map(item => {
-      if (item.name === name) {
-        item.config = content
-      }
-      return item;
-    }))
+    this.getViewByName(name).config = content;
   }
-  getViewByName (name) {
-    let view = _.cloneDeep(container.get('$quartz.views').find(item => {
-      return item.name === name
-    }))
 
-    if (!view) {
+  getViewByName (name) {
+
+    if (typeof container.get('$quartz.views')[name] === "undefined") {
       throw new DataViewError(`Cannot find view with name: ${name}`)
     }
 
-    return view;
+    return _.cloneDeep(container.get('$quartz.views')[name]);
   }
 
   newApiByUrl(url) {
@@ -59,7 +126,6 @@ export class Dictionary {
       return attribute.key === relationName
     })
   }
-
 
   getDataByName (dataName) {
     let data = container.get('$quartz.data').find((item) => {

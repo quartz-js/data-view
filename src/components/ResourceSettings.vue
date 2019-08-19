@@ -3,7 +3,7 @@
     <v-navigation-drawer v-model="settingsActive" fixed right width='1200' temporary>
 
       <div style='overflow-y:auto; max-height: 100%' >
-        <div class="content text-xs-left">
+        <div class="content text-left">
           <h3 class='title'>Data View</h3>
           <p class='mt-3'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec tincidunt diam vel ante porttitor porta. Mauris condimentum tortor at nulla tempor scelerisque. Phasellus consectetur magna sed massa congue, quis tempus enim facilisis. Donec a tortor malesuada, imperdiet ipsum ac, fringilla ante.</p>
 
@@ -36,11 +36,11 @@
 
           <!--<v-layout align-center class='ma-3'>
             <v-text-field label="name" v-model="table.list.create" placeholder="Type the name of the new field here"></v-text-field>
-            <v-btn color="primary" @click="create('list')">{{ $t('$quartz.core.create') }}</v-btn>
+            <q-btn color="primary" @click="create('list')">{{ $t('$quartz.core.create') }}</q-btn>
           </v-layout>-->
 
-          <div class='content text-xs-right mt-5'>
-            <v-btn @click="settingsActive = false">{{ $t('$quartz.core.close') }}</v-btn>
+          <div class='content text-right mt-5'>
+            <q-btn @click="settingsActive = false">{{ $t('$quartz.core.close') }}</q-btn>
           </div>
         </div>
       </div>
