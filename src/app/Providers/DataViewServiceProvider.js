@@ -17,7 +17,7 @@ export class DataViewServiceProvider extends ServiceProvider {
       'TextAttribute': 'q-attr-text',
       'LongTextAttribute': 'q-attr-textarea',
       'EmailAttribute': 'q-attr-text',
-      'PasswordAttribute': 'q-secret',
+      'PasswordAttribute': 'q-attr-secret',
       'BooleanAttribute': 'q-attr-switch',
       'EnumAttribute': 'q-attr-select',
       'YamlAttribute': 'q-attr-yaml',
