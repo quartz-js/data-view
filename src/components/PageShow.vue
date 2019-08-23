@@ -1,10 +1,10 @@
 <template>
-  <div>
+  <div >
     <component :is="component" :config="manager" v-bind="$attrs" v-if="view">
-      <template slot='tabs' slot-scope="scope">
-        <v-tab :key="key" v-for="(component, key, index) in components" v-if="hasComponent(component)"> {{ key }}</v-tab>
-        <v-tabs-items>
-          <v-tab-item :key="key" v-for="(component, key, index) in components" :transition="false" :reverse-transition="false" v-if="hasComponent(component)">
+      <template slot='body' slot-scope="scope">
+        <q-tabs class='show-tabs my-4' v-model="tabs">
+          <v-tab :key="key" v-for="(component, key, index) in components" v-if="hasComponent(component)">{{ key }}</v-tab>
+          <v-tab-item :key="key" v-for="(component, key, index) in components" :transition="false" :reverse-transition="false" v-if="hasComponent(component)" class="mt-5" >
             <component 
               :is="toComponent(component.extends)"
               :resource="toResource(component, scope.resource)" 
@@ -14,9 +14,11 @@
               :key="manager.name + '.' + component.key + component.extends"
             />
           </v-tab-item>
-        </v-tabs-items>
+        </q-tabs>
       </template>
+
       <template slot='actions' slot-scope="scope">
+
         <component 
           v-for="component in resourceComponents" 
           :is="toComponent(component.extends)" 
@@ -43,6 +45,7 @@ export default {
   ],
   data() {
     return {
+      tabs: null,
       component: null,
       resourceComponents: [],
     }
@@ -61,7 +64,7 @@ export default {
     if (this.view.config.options.actions) {
       this.resourceComponents = this.view.config.options.actions.resource
     }
-    
+
     this.component = Interceptor.resolve('pageShowOnRetrieve', {
       manager: this.manager,
       component: 'q-page-show'
