@@ -4,7 +4,7 @@
       <component v-for="component in globalComponents" :is="toComponent(component.extends)" :resource="scope.resource" :options="mergeOptions(options, component.options)" v-bind="$attrs"/>
     </template>
     <template slot='actions' slot-scope="scope">
-      <component v-for="component in resourceComponents" :is="toComponent(component.extends)" :resource="scope.resource" :manager="manager" :options="mergeOptions(options, component.options)" v-bind="$attrs"/>
+      <component v-for="component in resourceComponents" :is="toComponent(component.extends)" :resource="scope.resource" :manager="manager" :options="mergeOptions(options, component.options)" v-bind="$attrs" activatorType='q-btn-table'/>
     </template>
   </component>
 </template>
