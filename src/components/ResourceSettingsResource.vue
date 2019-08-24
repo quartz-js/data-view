@@ -36,7 +36,7 @@
 
             <q-form-yaml class='my-3' :value="dumpYaml(item)" @input="updateYaml(index, $event)"></q-form-yaml>
 
-            <q-btn color="red" @click="remove(index)" :loading="loading">{{ $t('$quartz.core.remove') }}</q-btn>
+            <q-btn color="error" @click="remove(index)" :loading="loading">{{ $t('$quartz.core.remove') }}</q-btn>
             <q-btn color="primary" @click="update().then(i => changeStatusExpandable(index, false))" :loading="loading">{{ $t('$quartz.core.save') }}</q-btn>
           </td>
         </tr>
