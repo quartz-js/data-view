@@ -3,8 +3,15 @@
     <component :is="component" :config="manager" v-bind="$attrs" v-if="view">
       <template slot='body' slot-scope="scope">
         <q-tabs class='show-tabs my-4' v-model="tabs">
-          <v-tab :key="key" v-for="(component, key, index) in components" v-if="hasComponent(component)" >{{ key }}</v-tab>
-          <v-tab-item class="ml-10" :key="key" v-for="(component, key, index) in components" :transition="false" :reverse-transition="false" v-if="hasComponent(component)">
+          <v-tab flat tile :key="key" v-for="(component, key, index) in components" v-if="hasComponent(component)" >{{ key }}</v-tab>
+          <v-tab-item 
+            v-bind:class="{'ml-4': $container.get('style.q-tabs.vertical'), 'mt-4': !$container.get('style.q-tabs.vertical')}"
+            :key="key" 
+            v-for="(component, key, index) in components" 
+            :transition="false" 
+            :reverse-transition="false" 
+            v-if="hasComponent(component)"
+          >
             <component 
               :is="toComponent(component.extends)"
               :resource="toResource(component, scope.resource)" 
