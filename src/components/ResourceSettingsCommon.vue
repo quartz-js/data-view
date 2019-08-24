@@ -125,8 +125,6 @@ export default {
         value = parseInt(value)
       }
 
-      console.log(value);
-
       if (value === '' || value === false) {
         _.unset(this.table.view.config.options.components[index], fields, value)
       } else {
