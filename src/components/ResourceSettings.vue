@@ -1,6 +1,6 @@
 <template>
   <div>
-    <q-drawer-form v-model="settingsActive">
+    <q-form v-model="settingsActive">
 
       <div style='overflow-y:auto; max-height: 100%' >
         <div class="content text-left">
@@ -14,22 +14,22 @@
             <v-tab :key="4">Resource Update</v-tab>
             <v-tab :key="5">Resource Show</v-tab>
             <v-tab :key="6">Page Show</v-tab>
-            <v-tab-item :key="1" :transition="false" :reverse-transition="false">
+            <v-tab-item :key="1">
               <resource-settings-resource :name='name + "-resource"' />
             </v-tab-item>
-            <v-tab-item :key="2" :transition="false" :reverse-transition="false">
+            <v-tab-item :key="2">
               <resource-settings-resource :name='name + "-resource-index"' />
             </v-tab-item>
-            <v-tab-item :key="3" :transition="false" :reverse-transition="false">
+            <v-tab-item :key="3">
               <resource-settings-resource :name='name + "-resource-create"' />
             </v-tab-item>
-            <v-tab-item :key="4" :transition="false" :reverse-transition="false">
+            <v-tab-item :key="4">
               <resource-settings-resource :name='name + "-resource-update"' />
             </v-tab-item>
-            <v-tab-item :key="5" :transition="false" :reverse-transition="false">
+            <v-tab-item :key="5">
               <resource-settings-resource :name='name + "-resource-show"' />
             </v-tab-item>
-            <v-tab-item :key="6" :transition="false" :reverse-transition="false">
+            <v-tab-item :key="6">
               <resource-settings-resource :name='name + "-page-show"' :size="false" />
             </v-tab-item>
           </v-tabs>
@@ -44,7 +44,7 @@
           </div>
         </div>
       </div>
-    </q-drawer-form>
+    </q-form>
 
     <div class='py-4 px-3 text-md-right'>
       <a href="javascript:;" @click="settingsActive = true" class='ma-0'>{{ $t('$quartz.core.settings') }}</a>
