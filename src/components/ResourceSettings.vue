@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-navigation-drawer v-model="settingsActive" fixed right width='1200' temporary>
+    <q-drawer-form v-model="settingsActive">
 
       <div style='overflow-y:auto; max-height: 100%' >
         <div class="content text-left">
@@ -44,7 +44,7 @@
           </div>
         </div>
       </div>
-    </v-navigation-drawer>
+    </q-drawer-form>
 
     <div class='py-4 px-3 text-md-right'>
       <a href="javascript:;" @click="settingsActive = true" class='ma-0'>{{ $t('$quartz.core.settings') }}</a>
