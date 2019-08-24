@@ -3,8 +3,8 @@
     <component :is="component" :config="manager" v-bind="$attrs" v-if="view">
       <template slot='body' slot-scope="scope">
         <q-tabs class='show-tabs my-4' v-model="tabs">
-          <v-tab :key="key" v-for="(component, key, index) in components" v-if="hasComponent(component)">{{ key }}</v-tab>
-          <v-tab-item :key="key" v-for="(component, key, index) in components" :transition="false" :reverse-transition="false" v-if="hasComponent(component)" class="mt-5" >
+          <v-tab :key="key" v-for="(component, key, index) in components" v-if="hasComponent(component)" >{{ key }}</v-tab>
+          <v-tab-item class="ml-10" :key="key" v-for="(component, key, index) in components" :transition="false" :reverse-transition="false" v-if="hasComponent(component)">
             <component 
               :is="toComponent(component.extends)"
               :resource="toResource(component, scope.resource)" 
@@ -72,7 +72,7 @@ export default {
   },
   methods: {
     hasComponent(component) {
-      return component.show === true || typeof component.show === 'undefined'
+      return !component.options || typeof component.options.hide === 'undefined' || !component.options.hide
     },
     toResource(view, resource) {
       if (view.options && view.options.extractor) {
