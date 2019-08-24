@@ -44,7 +44,7 @@ export default {
     this.globalComponents = this.view.config.options.actions.global
     this.component = Interceptor.resolve('resourceIndexOnRetrieve', {
       manager: this.manager,
-      component: 'q-resource-index'
+      component: 'q-data-iterator-table'
     }).component
 
   }
