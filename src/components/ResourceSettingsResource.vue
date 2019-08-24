@@ -6,7 +6,7 @@
   >
     <template v-slot:body="{ items }">
       <tbody v-for="(item, index) in items" :key="item.id" >
-        <tr v-bind:class="{'disable': typeof item.show !== 'undefined'}">
+        <tr v-bind:class="{'disable': typeof item.show !== 'undefined'}" @click="changeStatusExpandable(index, !canExpand(index))">
           <td>{{ index }} - {{ table.keys[index] }}</td>
           <td class="text-right">
             <v-layout align-center>
