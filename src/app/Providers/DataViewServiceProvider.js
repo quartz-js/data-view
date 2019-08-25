@@ -13,6 +13,8 @@ import { Attributes, Relations, Manager } from '@quartz/core'
 export class DataViewServiceProvider extends ServiceProvider {
   register () {
 
+    container.set('data-view', new Dictionary)
+    
     container.set('$quartz.attributes', _.merge(Attributes, Relations));
     container.set('$quartz.attributeResolvers', {
       'TextAttribute': 'q-attr-text',

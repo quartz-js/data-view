@@ -16,6 +16,13 @@ export default {
       default: true,
     }
   },
+  watch: {
+    name: {
+      handler: function () {
+         this.create()
+      }
+    }
+  },
   data() {
     return {
       loading: false,
@@ -49,6 +56,10 @@ export default {
     { 
       let key = this.table.keys[index];
       this.table.view.config.options.components[key] = this.loadYaml($event);
+    },
+    updateConfig($event)
+    { 
+      this.table.view.config = this.loadYaml($event);
     },
     create ()
     {
@@ -168,12 +179,16 @@ export default {
 
       this.table.details = Object.keys(this.table.view.config.options.components);
     },
+    create() {
+
+      this.dictionary = new Dictionary();
+      this.api = this.dictionary.newApiByName('data-view');
+      this.table.view = this.dictionary.getViewByName(this.name);
+      this.load();
+    }
   },
-  created() {
-    this.dictionary = new Dictionary();
-    this.api = this.dictionary.newApiByName('data-view');
-    this.table.view = this.dictionary.getViewByName(this.name);
-    this.load();
+  mounted () {
+    this.create()
   }
 }
 </script>

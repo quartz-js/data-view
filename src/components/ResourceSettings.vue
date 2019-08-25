@@ -6,34 +6,21 @@
         <div class="content text-left">
           <h3 class='title'>Data View</h3>
           <p class='mt-3'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec tincidunt diam vel ante porttitor porta. Mauris condimentum tortor at nulla tempor scelerisque. Phasellus consectetur magna sed massa congue, quis tempus enim facilisis. Donec a tortor malesuada, imperdiet ipsum ac, fringilla ante.</p>
-
-          <v-tabs v-model="tab">
-            <v-tab :key="1">Resource</v-tab>
-            <v-tab :key="2">Resource List</v-tab>
-            <v-tab :key="3">Resource Create</v-tab>
-            <v-tab :key="4">Resource Update</v-tab>
-            <v-tab :key="5">Resource Show</v-tab>
-            <v-tab :key="6">Page Show</v-tab>
-            <v-tab-item :key="1">
-              <resource-settings-resource :name='name + "-resource"' />
-            </v-tab-item>
-            <v-tab-item :key="2">
-              <resource-settings-resource :name='name + "-resource-index"' />
-            </v-tab-item>
-            <v-tab-item :key="3">
-              <resource-settings-resource :name='name + "-resource-create"' />
-            </v-tab-item>
-            <v-tab-item :key="4">
-              <resource-settings-resource :name='name + "-resource-update"' />
-            </v-tab-item>
-            <v-tab-item :key="5">
-              <resource-settings-resource :name='name + "-resource-show"' />
-            </v-tab-item>
-            <v-tab-item :key="6">
-              <resource-settings-resource :name='name + "-page-show"' :size="false" />
-            </v-tab-item>
-          </v-tabs>
-
+          
+          <div class='ma-3'>
+            <q-select
+              :items="items"
+              v-model="item"
+              label="Components"
+              placeholder="Pick one component"
+              item-text="name"
+              return-object
+              :hide-details="true"
+            ></q-select>
+          </div>
+          <div v-if="item">
+            <component is="resource-settings-resource" :name="item.name"/>
+          </div>
           <!--<v-layout align-center class='ma-3'>
             <v-text-field label="name" v-model="table.list.create" placeholder="Type the name of the new field here"></v-text-field>
             <q-btn color="primary" @click="create('list')">{{ $t('$quartz.core.create') }}</q-btn>
@@ -71,9 +58,13 @@ export default {
   },
   data() {
     return {
-      tab: null,
+      item: null,
+      items: [],
       settingsActive: false,
     }
   },
+  created() {
+    this.items = Object.values(this.$container.get('data-view').getViewByTag(this.name));
+  }
 }
 </script>

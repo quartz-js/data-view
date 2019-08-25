@@ -14,6 +14,7 @@
 import { Utils } from '../app/Helpers/Utils'
 import { CommonResource } from '../mixins/CommonResource'
 import { Interceptor } from '@quartz/core'
+import _ from 'lodash'
 
 export default {
   props: {
@@ -42,10 +43,14 @@ export default {
     this.createManager();
     this.resourceComponents = this.view.config.options.actions.resource
     this.globalComponents = this.view.config.options.actions.global
-    this.component = Interceptor.resolve('resourceIndexOnRetrieve', {
-      manager: this.manager,
-      component: 'q-data-iterator-table'
-    }).component
+
+    this.component = _.get({
+      "table": "q-data-iterator-table",
+      "discussion": "q-data-iterator-discussion",
+      "calendar": "q-data-iterator-calendar"
+    }, this.view.config.options.type, 'q-data-iterator-table')
+
+    console.log(this.view.name)
 
   }
 }

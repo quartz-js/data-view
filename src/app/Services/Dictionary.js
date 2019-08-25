@@ -91,6 +91,12 @@ export class Dictionary {
     this.getViewByName(name).config = content;
   }
 
+  getViewByTag (tag) {
+    return _.pickBy(container.get('$quartz.views'), (i) => {
+      return i.tag === tag
+    })
+  }
+
   getViewByName (name) {
 
     if (typeof container.get('$quartz.views')[name] === "undefined") {
