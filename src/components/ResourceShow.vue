@@ -6,7 +6,7 @@
           v-for="attribute in manager.attributes"
           v-if="attribute.show"
           v-bind="$attrs"
-          :is="toComponent(attribute.style.extends ? attribute.style.extends : 'data-view-attribute-show')" 
+          :is="toComponent(attribute.style.extends ? attribute.style.extends : 'attribute-show')" 
           :resource="scope.resource"
           :attributeOptions="attribute.style"
           :attributeName="attribute.name"
