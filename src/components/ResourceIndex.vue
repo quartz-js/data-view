@@ -34,11 +34,6 @@ export default {
       globalComponents: []
     }
   },
-  methods: {
-    toComponent(str) {
-      return Utils.nameToComponent(str)
-    }
-  },
   created() {
     this.createManager();
     this.resourceComponents = this.view.config.options.actions.resource

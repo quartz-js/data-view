@@ -123,13 +123,14 @@ export class DataViewServiceProvider extends ServiceProvider {
   }
 
   registerDataViewRoutes(item) {
+
     let cont = container.get('$quartz.view.routes');
 
     cont.push(item)
 
     item.config.map(route => {
       route.component = {
-        template: `<${Utils.nameToComponent('data-view-' + route.component)}/>`
+        template: `<${Utils.nameToComponent(route.component)}/>`
       }
 
       this.addRoutes('app', route);
@@ -145,7 +146,7 @@ export class DataViewServiceProvider extends ServiceProvider {
       return;
     }
     
-    this.registerComponent(Utils.nameToComponent('data-view-' + item.name), {
+    this.registerComponent(Utils.nameToComponent(item.name), {
       data() {
         return {
           view: null

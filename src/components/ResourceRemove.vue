@@ -15,11 +15,6 @@ export default {
       attributes: []
     }
   },
-  methods: {
-    toComponent(str) {
-      return Utils.nameToComponent(str)
-    }
-  },
   created() {
     this.createManager()
   }

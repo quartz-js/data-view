@@ -24,7 +24,7 @@ export class Dictionary {
   onParseDataViews (items) {
 
     _.map(items, (item) => {
-      if (item.processed.extends === 'data-view-resource-show') {
+      if (item.processed.extends === 'resource-show') {
 
         let data = item.processed.options.data;
         
@@ -34,7 +34,7 @@ export class Dictionary {
           processed: {
             label: item.processed.label,
             icon: item.processed.icon,
-            extends: 'data-view-resource-create-or-update',
+            extends: 'resource-create-or-update',
             permissions: [data + '.create',data + '.update'],
             update: data + '-resource-update',
             create: data + '-resource-create'
@@ -47,7 +47,7 @@ export class Dictionary {
           processed: {
             label: item.processed.label,
             icon: item.processed.icon,
-            extends: 'data-view-resource-show-or-create',
+            extends: 'resource-show-or-create',
             permissions: [data + '.show',data + '.create',data + '.update'],
             show: data + '-resource-show',
             create: data + '-resource-create-or-update'

@@ -72,7 +72,7 @@ export var Common = {
     },
 
     toComponent(str, prefix) {
-      return Utils.nameToComponent("data-view-" + str)
+      return Utils.nameToComponent(str)
     }
   },
   created() {
