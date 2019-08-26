@@ -88,7 +88,9 @@ export class Dictionary {
   }
 
   updateViewByName (name, content) {
-    this.getViewByName(name).config = content;
+    this.getViewByName(name, true).config = content;
+
+    window.bus.$emit('component.update');
   }
 
   getViewByTag (tag) {
@@ -97,13 +99,13 @@ export class Dictionary {
     })
   }
 
-  getViewByName (name) {
+  getViewByName (name, original) {
 
     if (typeof container.get('$quartz.views')[name] === "undefined") {
       throw new DataViewError(`Cannot find view with name: ${name}`)
     }
 
-    return _.cloneDeep(container.get('$quartz.views')[name]);
+    return original ? container.get('$quartz.views')[name] : _.cloneDeep(container.get('$quartz.views')[name])
   }
 
   newApiByUrl(url) {

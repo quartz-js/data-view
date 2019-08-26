@@ -16,9 +16,10 @@ export class ManagerResolver extends Resolver
       manager: this.dictionary.newApiByUrl(view.config.options.api),
       icon: view.config.icon,
       descriptor: this.dictionary.getDataByName(view.config.options.data).descriptor,
+      readable: view.config.options.readable,
       attributes: []
     });
-
+    
     if (view.config.options.query) {
       manager.parserFinalQuery.push((query) => {
         return manager.mergePartsQuery([view.config.options.query, query], 'and');

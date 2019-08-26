@@ -162,7 +162,7 @@ export default {
       }).then(response => {
 
         this.dictionary.updateViewByName(this.name, response.body.data.processed);
-
+        
         this.load();
 
         bus.$emit('data-view.updated', response.body.data);
@@ -178,10 +178,7 @@ export default {
       return yaml.dump(object).replace(/^\s*\n/gm)
     },
     load () {
-      console.log('Yolo')
       this.table.view = this.dictionary.getViewByName(this.name);
-      console.log('Ban')
-      console.log(JSON.stringify(this.table.view.config.type))
       this.table.items = Object.values(this.table.view.config.options.components);
       this.table.keys = Object.keys(this.table.view.config.options.components);
 

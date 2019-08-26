@@ -70,6 +70,7 @@ export default {
         config: this.$container.get('yaml').dump(config)
       }).then(response => {
         this.duplicate = false
+        window.bus.$emit('component.update');
       });
 
     }
