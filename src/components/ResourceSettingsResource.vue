@@ -45,7 +45,9 @@
       </template>
     </v-data-table>
 
-    <q-btn color="primary" @click="update()" :loading="loading">{{ $t('$quartz.core.save') }}</q-btn>
+    <q-form-yaml class='my-3' v-model="yaml"></q-form-yaml>
+
+    <q-btn color="primary" @click="updateConfig()" :loading="loading">{{ $t('$quartz.core.save') }}</q-btn>
 
   </div>
 </div>

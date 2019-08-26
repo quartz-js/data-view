@@ -26,6 +26,7 @@ export default {
   data() {
     return {
       loading: false,
+      yaml: null,
       table: {
         headers: [{text: 'name', sortable: false, width: 120}, {text: '', sortable: false}],
         create: null,
@@ -59,7 +60,7 @@ export default {
     },
     updateConfig($event)
     { 
-      this.table.view.config = this.loadYaml($event);
+      return this.update(this.yaml)
     },
     create ()
     {
@@ -148,7 +149,7 @@ export default {
     {
       return yaml.load(string)
     },
-    update()
+    update(val)
     {
       if (this.loading) {
         return;
@@ -157,14 +158,17 @@ export default {
       this.loading = true;
       let dataViewId = this.table.view.id;
       return this.api.update(dataViewId, {
-        config: this.dumpYaml(this.table.view.config)
+        config: val ? val : this.dumpYaml(this.table.view.config)
       }).then(response => {
-
-        bus.$emit('data-view.updated', response.body.data);
 
         this.dictionary.updateViewByName(this.name, response.body.data.processed);
 
-        return this.load();
+        this.load();
+
+        bus.$emit('data-view.updated', response.body.data);
+
+
+        return response;
       }).finally(response => {
         this.loading = false;
       })
@@ -174,16 +178,21 @@ export default {
       return yaml.dump(object).replace(/^\s*\n/gm)
     },
     load () {
+      console.log('Yolo')
+      this.table.view = this.dictionary.getViewByName(this.name);
+      console.log('Ban')
+      console.log(JSON.stringify(this.table.view.config.type))
       this.table.items = Object.values(this.table.view.config.options.components);
       this.table.keys = Object.keys(this.table.view.config.options.components);
 
       this.table.details = Object.keys(this.table.view.config.options.components);
+
+      this.yaml = this.$container.get('yaml').dump(this.table.view.config)
     },
     create() {
 
       this.dictionary = new Dictionary();
       this.api = this.dictionary.newApiByName('data-view');
-      this.table.view = this.dictionary.getViewByName(this.name);
       this.load();
     }
   },
