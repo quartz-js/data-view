@@ -46,7 +46,8 @@ export class DataViewServiceProvider extends ServiceProvider {
     this.registerComponent("DataViewResourceCreateOrUpdate", require('../../components/ResourceCreateOrUpdate').default)
     this.registerComponent("DataViewResourceShowOrCreate", require('../../components/ResourceShowOrCreate').default)
     this.registerComponent("DataViewResourceShow", require('../../components/ResourceShow').default)
-    this.registerComponent("DataViewResourceIndex", require('../../components/ResourceIndex').default)
+    this.registerComponent("DataViewDataIteratorTable", require('../../components/DataIteratorTable').default)
+    this.registerComponent("DataViewDataIteratorCalendar", require('../../components/DataIteratorCalendar').default)
     this.registerComponent("DataViewAttributeInput", require('../../components/AttributeInput').default)
     this.registerComponent("DataViewAttributeShow", require('../../components/AttributeShow').default)
 
