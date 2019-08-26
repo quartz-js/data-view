@@ -13,8 +13,8 @@
               <v-layout align-center>
                 <span v-if="canExpand(index)" @click="changeStatusExpandable(index, false)"><q-btn color="primary" text icon><i class="fas fa-eye"></i></q-btn></span>
                 <span class='disable' v-if="!canExpand(index)" @click="changeStatusExpandable(index, true)"><q-btn color="primary" text icon><i class="fas fa-eye-slash"></i></q-btn></span>
-                <q-btn icon v-bind:class="{'hidden': !canMoveDown(index)}" @click="moveDown(index)"><v-icon>arrow_drop_down</v-icon></q-btn>
-                <q-btn icon v-bind:class="{'hidden': !canMoveUp(index)}" @click="moveUp(index)"><v-icon>arrow_drop_up</v-icon></q-btn>
+                <q-btn icon v-bind:class="{'hidden': !canMoveDown(index)}" @click="moveDown(index)"><q-icon>arrow_drop_down</q-icon></q-btn>
+                <q-btn icon v-bind:class="{'hidden': !canMoveUp(index)}" @click="moveUp(index)"><q-icon>arrow_drop_up</q-icon></q-btn>
               </v-layout>
             </td>
           </tr>
