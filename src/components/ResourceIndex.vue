@@ -44,9 +44,6 @@ export default {
       "discussion": "q-data-iterator-discussion",
       "calendar": "q-data-iterator-calendar"
     }, this.view.config.options.type, 'q-data-iterator-table')
-
-    console.log(this.view.name)
-
   }
 }
 </script>

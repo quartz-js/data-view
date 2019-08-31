@@ -34,7 +34,6 @@ export class RelationResolver extends Resolver
       return attribute;
     }
 
-
     if (!relationSchema.intermediate) {
       return attribute;
     }
@@ -123,6 +122,7 @@ export class RelationResolver extends Resolver
           return Promise.resolve(includes)
         })
       }
+
 
       attribute.instance.addRelationable({
         query: {

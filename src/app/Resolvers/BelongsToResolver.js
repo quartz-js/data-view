@@ -75,6 +75,7 @@ export class BelongsToResolver extends AttributeResolver
       return Promise.resolve(params)
     }) 
     
+    
     keys.map(key => {
 
       if (!attribute.view.options[key]) {
@@ -93,6 +94,8 @@ export class BelongsToResolver extends AttributeResolver
           return Promise.resolve(includes)
         })
       }
+      console.log(key)
+      console.log(attribute.view.options[key].readable)
 
       attribute.instance.addRelationable({
         query: {
