@@ -14,11 +14,6 @@
               :value="$container.get('settings').get('data-view:selector:page-index:'+view.name, ['main'])"
               @input="$container.get('settings').store('data-view:selector:page-index:'+view.name, $event.value);selectedComponent=$event.components"
             ></q-component-selector>
-            <q-btn content-text="create" content-icon="add" @click="duplicate=true"/>
-
-            <q-form v-model="duplicate">
-              <data-view-clone :tag="view.config.label" @success="cloned($event)" @error=""/>
-            </q-form>
           </v-row>
           </v-layout>
         </q-card>
@@ -55,25 +50,6 @@ export default {
     }
   },
   methods: {
-    cloned(data) {
-      let api = new Dictionary().newApiByName('data-view');
-
-      let config = this.view.config
-
-      config.options.components[data.name] = {
-        extends: data.name
-      }
-
-      new Dictionary().updateViewByName(this.view.name, config)
-      
-      return api.update(this.view.id, {
-        config: this.$container.get('yaml').dump(config)
-      }).then(response => {
-        this.duplicate = false
-        window.bus.$emit('component.update');
-      });
-
-    }
   },
   created() {
 

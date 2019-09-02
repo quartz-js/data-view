@@ -25,7 +25,6 @@
       </template>
 
       <template slot='actions' slot-scope="scope">
-
         <component 
           v-for="component in resourceComponents" 
           :is="toComponent(component.extends)" 

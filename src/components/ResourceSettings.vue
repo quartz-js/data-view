@@ -3,11 +3,11 @@
     <q-form v-model="settingsActive">
 
       <div style='overflow-y:auto; max-height: 100%' >
-        <div class="content text-left">
-          <h3 class='title'>Data View</h3>
+        <div class="pa-5 text-left">
+          <h3 class='title'>Edit Data View</h3>
           <p class='mt-3'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec tincidunt diam vel ante porttitor porta. Mauris condimentum tortor at nulla tempor scelerisque. Phasellus consectetur magna sed massa congue, quis tempus enim facilisis. Donec a tortor malesuada, imperdiet ipsum ac, fringilla ante.</p>
           
-          <div class='ma-3'>
+          <div>
             <q-select
               :items="items"
               v-model="item"
@@ -21,15 +21,20 @@
           <div v-if="item">
             <component is="resource-settings-resource" :name="item.name"/>
           </div>
+
+
+
           <!--<v-layout align-center class='ma-3'>
             <v-text-field label="name" v-model="table.list.create" placeholder="Type the name of the new field here"></v-text-field>
             <q-btn color="primary" @click="create('list')">{{ $t('$quartz.core.create') }}</q-btn>
           </v-layout>-->
 
-          <div class='content text-right mt-5'>
-            <q-btn @click="settingsActive = false">{{ $t('$quartz.core.close') }}</q-btn>
-          </div>
         </div>
+      </div>
+
+      <data-view-clone :tag="name" @success="cloned($event)" @error=""/>
+      <div class='content text-right mt-5'>
+        <q-btn @click="settingsActive = false">{{ $t('$quartz.core.close') }}</q-btn>
       </div>
     </q-form>
 
@@ -43,12 +48,14 @@
 import { Common } from '../mixins/Common'
 import { DataResolver } from '../app/Services/DataResolver'
 import ResourceSettingsResource from './ResourceSettingsResource'
+import DataViewClone from './DataViewClone'
 
 const yaml = require('js-yaml')
     
 export default {
   mixins: [Common],
   components: {
+    DataViewClone,
     ResourceSettingsResource,
   },
   props: {
@@ -58,9 +65,32 @@ export default {
   },
   data() {
     return {
+      duplicate: false,
       item: null,
       items: [],
       settingsActive: false,
+    }
+  },
+  methods: {
+
+    cloned(data) {
+      let api = new Dictionary().newApiByName('data-view');
+
+      let config = this.view.config
+
+      config.options.components[data.name] = {
+        extends: data.name
+      }
+
+      new Dictionary().updateViewByName(this.view.name, config)
+      
+      return api.update(this.view.id, {
+        config: this.$container.get('yaml').dump(config)
+      }).then(response => {
+        this.duplicate = false
+        window.bus.$emit('component.update');
+      });
+
     }
   },
   created() {
