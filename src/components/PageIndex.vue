@@ -11,7 +11,7 @@
               :items="components"
               :resource="scope.resource" 
               v-bind="$attrs"
-              :value="$container.get('settings').get('data-view:selector:page-index:'+view.name)"
+              :value="$container.get('settings').get('data-view:selector:page-index:'+view.name, ['main'])"
               @input="$container.get('settings').store('data-view:selector:page-index:'+view.name, $event.value);selectedComponent=$event.components"
             ></q-component-selector>
             <q-btn content-text="create" content-icon="add" @click="duplicate=true"/>
