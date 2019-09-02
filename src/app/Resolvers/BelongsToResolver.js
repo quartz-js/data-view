@@ -94,9 +94,6 @@ export class BelongsToResolver extends AttributeResolver
           return Promise.resolve(includes)
         })
       }
-      console.log(key)
-      console.log(attribute.view.options[key].readable)
-
       attribute.instance.addRelationable({
         query: {
           include: attribute.view.options[key].query.include ? attribute.view.options[key].query.include.split(",") : [],
