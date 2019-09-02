@@ -32,6 +32,7 @@ export class DataViewServiceProvider extends ServiceProvider {
       'ClassNameAttribute': 'q-attr-select',
       'FileAttribute': 'q-attr-file',
       'UuidAttribute': 'q-attr-text',
+      'ArrayAttribute': 'q-attr-json',
       'MorphToMany': 'q-attr-morph-to-many',
       'BelongsToMany': 'q-attr-belongs-to-many',
       'ObjectAttribute': 'q-attr-json',
