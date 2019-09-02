@@ -54,7 +54,6 @@ import DataViewClone from './DataViewClone'
 const yaml = require('js-yaml')
     
 export default {
-  mixins: [Common],
   components: {
     DataViewClone,
     ResourceSettingsResource,
