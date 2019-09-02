@@ -46,6 +46,7 @@
 
 <script>
 import { Common } from '../mixins/Common'
+import { Dictionary } from '../app/Services/Dictionary'
 import { DataResolver } from '../app/Services/DataResolver'
 import ResourceSettingsResource from './ResourceSettingsResource'
 import DataViewClone from './DataViewClone'
@@ -61,11 +62,13 @@ export default {
   props: {
     name: {
       type: String
+    },
+    view: {
+      type: Object
     }
   },
   data() {
     return {
-      duplicate: false,
       item: null,
       items: [],
       settingsActive: false,
@@ -87,7 +90,7 @@ export default {
       return api.update(this.view.id, {
         config: this.$container.get('yaml').dump(config)
       }).then(response => {
-        this.duplicate = false
+        this.settingsActive = false
         window.bus.$emit('component.update');
       });
 

@@ -33,7 +33,7 @@
           v-bind="$attrs"/>
       </template>
     </component>
-    <resource-settings :name="manager.data" />
+    <resource-settings :name="manager.data" :view="view" />
   </div>
 </template>
 <script>

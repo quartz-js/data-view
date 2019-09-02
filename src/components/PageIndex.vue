@@ -21,7 +21,7 @@
         <component v-for="component in selectedComponent" v-if="component" v-bind='component.props'/>
       </template>
     </q-page-index>
-    <resource-settings :name="manager.data" />
+    <resource-settings :name="manager.data" :view="view"/>
   </div>
 </template>
 
