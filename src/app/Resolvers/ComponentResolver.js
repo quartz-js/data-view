@@ -7,7 +7,8 @@ export class ComponentResolver extends Resolver
 
     data.components = [];
 
-    let components = data.view.config.options.components;
+    // Options are now 
+    let components = this.dictionary.getComponentsByView(data.view)
 
     for (let attributeName in components) {
 
@@ -15,6 +16,7 @@ export class ComponentResolver extends Resolver
 
       component.name = attributeName
       component.view = this.mergeWithBase(data.name, components[component.name]);
+
 
       if (!component.view) {
         throw new DataViewError(`Undefined element at key: ${data.name}:${component.name}. ${JSON.stringify(components)}`)
@@ -25,7 +27,6 @@ export class ComponentResolver extends Resolver
       }
 
       data.components.push(component)
-
     }
 
     return data;
@@ -35,17 +36,15 @@ export class ComponentResolver extends Resolver
       return attribute
     }
 
-    let parts = attribute.include.split(".");
-
-    let viewName = parts[0]  + '-resource';
-
-    let view = this.dictionary.getViewByName(viewName);
+    let view = this.dictionary.getViewByName(attribute.include);
 
     if (attribute.options === null) {
       attribute.options = {}
     }
 
-    attribute = _.merge(_.get(view.config.options, parts.slice(1)), attribute)
+    attribute = _.merge(view.config, attribute)
+      
+    console.log(attribute)
 
     return attribute;
   }

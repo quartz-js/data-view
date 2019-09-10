@@ -1,27 +1,12 @@
 <template>
   <q-resource-edit v-bind="$attrs" :config="manager">
     <template slot='edit' slot-scope="scope">
-      <v-layout row wrap align-end>
-        <component 
-          v-for="attribute in manager.attributes"
-          v-if="attribute.fillable && attribute.show"
-          v-bind="$attrs"
-          :is="toComponent(attribute.style.extends ? attribute.style.extends : 'attribute-input')" 
-          :resource="scope.resource"
-          :attributeOptions="attribute.style"
-          :attributeName="attribute.name"
-          :errors="scope.errors"
-          :manager="manager"
+      <component 
+        :is="getComponent()" 
+        :manager="manager"
+        v-bind="$attrs"
+        :options="options"
         />
-        <component 
-          v-for="component in view.config.options.components"
-          v-if="component.type === 'component'"
-          v-bind="$attrs"
-          :is="component.extends" 
-          :resource="scope.resource"
-          :manager="manager"
-        />
-      </v-layout>
     </template>
   </q-resource-edit>
 </template>
@@ -34,8 +19,10 @@ export default {
   mixins: [
     CommonResource
   ],
-  created() {
-    this.createManager()
-  }
+  methods: {
+    getComponent() {
+      return "data-view-" + this.view.config.upsert
+    }
+  },
 }
 </script>

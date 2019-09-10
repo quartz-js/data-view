@@ -23,8 +23,8 @@ export default {
     // Change based on Attribute Class
     getComponent() {
       let attribute = this.getAttribute().getClassName()
-
-      let component = container.get('$quartz.attributeResolvers')[attribute];
+      
+      let component = container.get('$quartz.attributeResolvers')[this.getAttribute().type] || container.get('$quartz.attributeResolvers')[attribute];
 
       if (component) {
         return component;

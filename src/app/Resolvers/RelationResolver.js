@@ -1,147 +1,88 @@
-import { Resolver } from './Resolver'
+import { AttributeResolver } from './AttributeResolver'
 import { DataViewError } from '../Errors/DataViewError'
-import { Helper, container } from '@quartz/core'
+import { DataResolver } from '../Services/DataResolver'
 import _ from 'lodash'
 
-export class RelationResolver extends Resolver
+export class RelationResolver extends AttributeResolver
 {
-  resolve (data) {
-    data.components.filter(attr => {
-      return attr.view.type === 'relation'
-    }).map((attr,key) => {
-      data.components[key] = this.resolveRelation(data, attr)
-    })
+  resolveAttribute (data, attribute) {
 
-    return data
-  }
-  resolveRelation (data, attribute) {
-
-    let relationName = attribute.name;
     let name = data.name;
+    let options = data.options;
     let manager = data.manager;
-    let relationSchema = this.dictionary.findRelationByName(name, attribute.view.name);
-    
-    if (!relationSchema) {
-      throw new DataViewError(`Cannot find Relation in Schema ${name}:${attribute.view.name}`)
-    }
 
-    if (relationSchema.type !== 'MorphToMany' && relationSchema.type !== 'BelongsToMany') {
-      return attribute
-    }
+    console.log(attribute)
 
-    if (!attribute.view.options.query) {
-      console.warn(`[Data-View] Missing parameter options.query in ${data.view.name}:${relationName}`)
+    let relationers = attribute.view.options.schema;
+
+    if (!relationers) {
       return attribute;
     }
 
-    if (!relationSchema.intermediate) {
-      return attribute;
-    }
+    console.log(relationers)
 
-    let attrClass = container.get('$quartz.attributes')[relationSchema.type]
-    
-    if (!attrClass) {
-      throw new DataViewError(`Cannot find Javascript Attribute Class ${name}:${relationSchema.type}`)
-    }
+    /*if (!options.query && !options.ignoreTree) {
+      if (manager.descriptor.tree && manager.descriptor.tree.parent === attribute.instance.column) {
+        if (attribute.instance.fixed(null) === undefined) {
+          attribute.instance.setFixed(() => {
+            return null;
+          });
+        }
+      }
+    }*/
+    // Create a list of all available managers and components
 
-    let scopes = _.clone(relationSchema.scope.slice(1));
+    let keys = [];
 
-    let view = this.dictionary.getViewByName(`${relationSchema.data}-resource`);
 
-    let include = [];
-
-    let params = [];
-
-    var queriesSearcher = scopes.filter(scope => {
-      return scope.column.split(".").length === 1;
-
-    }).map(scope => {
-      return `${scope.column} ${scope.operator} "${scope.value}"`
-    })
-
-    var queriesPersister = scopes.filter(scope => {
-      return scope.column.split(".").length === 2;
-
-    }).map(scope => {
-
-      scope.column = scope.column.split(".")[1]
-
-      params[scope.column] = scope.value;
-
-      return `${scope.column} ${scope.operator} "${scope.value}"`
-    })
-
-    let apiSearcher = this.dictionary.newApiByUrl(view.config.options.api).setFilterQuery(function (query) {
-      let queries = _.clone(queriesSearcher)
-      queries.push(query);
-
-      return Helper.mergePartsQuery(queries, 'and');
-    });
-
-    let apiPersister = this.dictionary.newApiByUrl(this.dictionary.getViewByName(`${relationSchema.intermediate}-resource`).config.options.api).setFilterQuery(function (query) {
-
-      let queries = _.clone(queriesPersister)
-      queries.push(query);
-
-      return Helper.mergePartsQuery(queries, 'and');
-    }).setParams(params);
-
-    attribute.instance = new attrClass(relationName, apiSearcher, apiPersister)
-      .set('column', _.snakeCase(relationName))
-      .set('relationId', relationSchema.relatedPivotKey)
-      .set('relationName', relationSchema.relatedPivotKey.replace("_id", ""))
-      .set('morphTypeColumn', relationSchema.scope[0] ? relationSchema.scope[0].column : null)
-      .set('morphTypeValue', relationSchema.scope[0] ? relationSchema.scope[0].value : null)
-      .set('morphKeyColumn', relationSchema.foreignPivotKey)
-      .set('fillable', true)
-      .set('style', _.merge({extends: attribute.view.extends}, attribute.view.options))
-
-    manager.addAttribute(attribute.instance);
-
-    attribute.view.options.label && attribute.instance.set('label', attribute.view.options.label);
-    attribute.view.options.hide && attribute.instance.set('show', !attribute.view.options.hide);
-    
-    if (attribute.instance.style.include) {
-      attribute.instance.addHook('include', (includes) => {
-        includes.push(attribute.instance.style.include);
-        return Promise.resolve(includes)
-      })
-    }
-
-    let keys = [relationSchema.data]
+    keys = Object.keys(relationers)
 
     attribute.instance.setRelationableSwitcher(resource => {
-      return relationSchema.data
+      return resource[relationKey]
     })
     
     keys.map(key => {
 
-      if (attribute.view.options.query.include) {
+      if (!relationers[key]) {
+        throw new DataViewError(`Cannot find options with key ${key}. You should probably update the data-view`)
+      }
+
+      let actions = _.map(relationers[key].actions, action => {
+        return `data-view-${action}`
+      })
+
+      let view = this.dictionary.getViewByName(`${key}.resource.upsert`);
+      
+      if (relationers[key].select.include) {
         attribute.instance.addHook('include', (includes) => {
-          includes.push(attribute.view.options.query.include.split(",").map(i => { return attribute.instance.name + "." + i}));
+          includes.push(relationers[key].query.include.split(",").map(i => { return attribute.instance.name + "." + i}));
           return Promise.resolve(includes)
         })
       }
 
-
       attribute.instance.addRelationable({
-        query: {
-          include: attribute.view.options.query.include ? attribute.view.options.query.include.split(",") : [],
-          template: attribute.view.options.query.template
+        select: {
+          include: relationers[key].include,
+          label: relationers[key].select.label
         },
         label: {
-          type: attribute.view.options.readable.type,
-          template: attribute.view.options.readable.template
+          type: relationers[key].readable.type,
+          label: relationers[key].readable.label
         },
         key: key,
-        onLoad: (t) => {
+        manager: (resource) => {
 
-        }
+          let manager = (new DataResolver).createManager(view, {
+            ignoreTree: relationers[key].select.label
+          });
+
+          return manager
+        },
+        actions: actions,
+        onLoad: (t) => {}
       })
+    });
 
-
-    })
-
-    return attribute;
+    return attribute
   }
 }

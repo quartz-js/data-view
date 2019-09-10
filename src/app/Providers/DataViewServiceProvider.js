@@ -17,6 +17,7 @@ export class DataViewServiceProvider extends ServiceProvider {
     
     container.set('$quartz.attributes', _.merge(Attributes, Relations));
     container.set('$quartz.attributeResolvers', {
+      'BaseAttribute': 'q-attr-base',
       'TextAttribute': 'q-attr-text',
       'LongTextAttribute': 'q-attr-textarea',
       'EmailAttribute': 'q-attr-text',
@@ -37,14 +38,13 @@ export class DataViewServiceProvider extends ServiceProvider {
       'BelongsToMany': 'q-attr-belongs-to-many',
       'ObjectAttribute': 'q-attr-json',
       'HtmlAttribute': 'q-attr-html',
+      'autocomplete': 'q-attr-autocomplete',
     });
 
     this.registerComponent("DataViewPageShow", require('../../components/PageShow').default)
     this.registerComponent("DataViewPageIndex", require('../../components/PageIndex').default)
-    this.registerComponent("DataViewResourceCreate", require('../../components/ResourceCreate').default)
-    this.registerComponent("DataViewResourceUpdate", require('../../components/ResourceUpdate').default)
+    this.registerComponent("DataViewResourceUpsert", require('../../components/ResourceUpsert').default)
     this.registerComponent("DataViewResourceDelete", require('../../components/ResourceRemove').default)
-    this.registerComponent("DataViewResourceCreateOrUpdate", require('../../components/ResourceCreateOrUpdate').default)
     this.registerComponent("DataViewResourceShowOrCreate", require('../../components/ResourceShowOrCreate').default)
     this.registerComponent("DataViewResourceShow", require('../../components/ResourceShow').default)
     this.registerComponent("DataViewDataIteratorTable", require('../../components/DataIteratorTable').default)
@@ -83,7 +83,7 @@ export class DataViewServiceProvider extends ServiceProvider {
 
     this.api = new DataViewApi();
     let adminApi = new AdminApi();
-    this.dictionary = new Dictionary();
+    this.dictionary = container.get('data-view')
 
     return adminApi.index().then(response => {
       let lang = container.get('settings').get('language', 'en')
@@ -147,8 +147,15 @@ export class DataViewServiceProvider extends ServiceProvider {
     if (!item.config.extends) {
       return;
     }
+
+    if (item.parent_id) {
+      return
+    }
+
+    console.log(Utils.nameToComponent(item.name))
     
     this.registerComponent(Utils.nameToComponent(item.name), {
+
       data() {
         return {
           view: null

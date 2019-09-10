@@ -50,7 +50,7 @@ export default {
     }
   },
   created() {
-    this.dictionary = new Dictionary();
+    this.dictionary = this.$container.get('data-view')
       
     this.items = Object.values(this.dictionary.getViewByTag(this.tag));
   },

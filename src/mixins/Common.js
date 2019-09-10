@@ -54,7 +54,7 @@ export var Common = {
     },
     createManagerByName(name) {
       this.view.config.options = this.mergeOptions(this.view.config.options, this.options)
-      this.manager = this.newManagerByView(new Dictionary().getViewByName(name + "-resource"));
+      this.manager = this.newManagerByView(this.$container.get('data-view').getViewByName(name + ".resource.upsert"));
     },
     getKey (view) {
       this.manager.name + this.toComponent(str)

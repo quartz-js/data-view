@@ -4,7 +4,6 @@
       <template slot='body' slot-scope="scope">
         <q-card class="pa-2">
           <v-layout align-center>
-
             <q-component-selector style='flex-grow: 2'
               label="Components"
               outlined
@@ -17,7 +16,6 @@
           </v-row>
           </v-layout>
         </q-card>
-
         <component v-for="component in selectedComponent" v-if="component" v-bind='component.props'/>
       </template>
     </q-page-index>
@@ -54,7 +52,7 @@ export default {
   created() {
 
     this.createManagerByName(this.view.config.label)
-    this.components = Object.values(_.map(this.view.config.options.components, (component, key) => {
+    this.components = Object.values(_.map(this.$container.get('data-view').getComponentsByView(this.view), (component, key) => {
       return {
         text: key,
         value: key,

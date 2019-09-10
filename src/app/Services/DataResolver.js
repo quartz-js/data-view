@@ -1,7 +1,7 @@
 import { ManagerResolver } from '../Resolvers/ManagerResolver'
 import { AttributeResolver } from '../Resolvers/AttributeResolver'
 import { EnumResolver } from '../Resolvers/EnumResolver'
-import { BelongsToResolver } from '../Resolvers/BelongsToResolver'
+import { TabsResolver } from '../Resolvers/TabsResolver'
 import { ComponentResolver } from '../Resolvers/ComponentResolver'
 import { RelationResolver } from '../Resolvers/RelationResolver'
 import { EagerLoadingResolver } from '../Resolvers/EagerLoadingResolver'
@@ -16,9 +16,7 @@ export class DataResolver {
       new ManagerResolver,
       new ComponentResolver,
       new AttributeResolver,
-      new EnumResolver,
-      new BelongsToResolver,
-      new RelationResolver,
+      new TabsResolver,
       new EagerLoadingResolver
     ]
   }
@@ -31,6 +29,7 @@ export class DataResolver {
 
     try {
       this.resolvers.map(resolver => {
+
         data = resolver.resolve(data)
       })
     } catch (e) {

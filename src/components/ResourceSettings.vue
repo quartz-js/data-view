@@ -76,7 +76,7 @@ export default {
   methods: {
 
     cloned(data) {
-      let api = new Dictionary().newApiByName('data-view');
+      let api = this.$container.get('data-view').newApiByName('data-view');
 
       let config = this.view.config
 
@@ -84,7 +84,7 @@ export default {
         extends: data.name
       }
 
-      new Dictionary().updateViewByName(this.view.name, config)
+      this.$container.get('data-view').updateViewByName(this.view.name, config)
       
       return api.update(this.view.id, {
         config: this.$container.get('yaml').dump(config)

@@ -188,7 +188,7 @@ export default {
     },
     create() {
 
-      this.dictionary = new Dictionary();
+      this.dictionary = this.$container.get('data-view');
       this.api = this.dictionary.newApiByName('data-view');
       this.load();
     }

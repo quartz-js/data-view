@@ -27,31 +27,19 @@ export class Dictionary {
       if (item.processed.extends === 'resource-show') {
 
         let data = item.processed.options.data;
-        
-        items.push({
-          name: data + '-resource-create-or-update',
-          type: 'component',
-          processed: {
-            label: item.processed.label,
-            icon: item.processed.icon,
-            extends: 'resource-create-or-update',
-            permissions: [data + '.create',data + '.update'],
-            update: data + '-resource-update',
-            create: data + '-resource-create'
-          }
-        });
 
         items.push({
-          name: data + '-resource-show-or-create',
+          name: data + '.resource.show.or.create',
           type: 'component',
           processed: {
             label: item.processed.label,
             icon: item.processed.icon,
-            extends: 'resource-show-or-create',
+            extends: 'resource.show.or.create',
             permissions: [data + '.show',data + '.create',data + '.update'],
-            show: data + '-resource-show',
-            create: data + '-resource-create-or-update'
-          }
+            show: data + '.resource.show',
+            create: data + '.resource.create.or.update'
+          },
+          parent_id: null
         });
       }
     })
@@ -99,6 +87,28 @@ export class Dictionary {
     })
   }
 
+  getComponentsByView (view) {
+    let object = _.map(this.getViewsByParent(view.id), (i) => {
+      let config = i.config
+
+      if (!config.name) {
+        config.name = i.name
+      }
+
+      return config
+    })
+
+    return _.mapKeys(object, (i) => {
+      return i.name
+    })
+  }
+
+  getViewsByParent (id) {
+    return _.pickBy(container.get('$quartz.views'), (i) => {
+      return i.parent_id === id
+    })
+  }
+
   getViewByName (name, original) {
 
     if (typeof container.get('$quartz.views')[name] === "undefined") {
@@ -116,7 +126,7 @@ export class Dictionary {
   }
 
   newApiByName(name) {
-    return this.newApiByUrl(this.getViewByName(name + "-resource").config.options.api);
+    return this.newApiByUrl(this.getViewByName(name + ".resource.show").config.options.api);
   }
 
   findAttributeByName (dataName, attributeName) {
