@@ -43,8 +43,6 @@ export class ComponentResolver extends Resolver
     }
 
     attribute = _.merge(view.config, attribute)
-      
-    console.log(attribute)
 
     return attribute;
   }

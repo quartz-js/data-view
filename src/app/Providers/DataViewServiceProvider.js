@@ -152,8 +152,6 @@ export class DataViewServiceProvider extends ServiceProvider {
       return
     }
 
-    console.log(Utils.nameToComponent(item.name))
-    
     this.registerComponent(Utils.nameToComponent(item.name), {
 
       data() {

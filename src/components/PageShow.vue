@@ -61,7 +61,7 @@ export default {
   },
   computed: {
     components: function () {
-      return this.view.config.options.components
+      return this.$container.get('data-view').getComponentsByView(this.view)
     }
   },
   created() {

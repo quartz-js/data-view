@@ -4,9 +4,9 @@
       <div class='layout row wrap'>
         <component 
           v-for="attribute in manager.attributes"
-          v-if="attribute.show"
+          v-if="!attribute.hide"
           v-bind="$attrs"
-          :is="toComponent(attribute.style.extends ? attribute.style.extends : 'attribute-show')" 
+          :is="toComponent('attribute-show')" 
           :resource="scope.resource"
           :attributeOptions="attribute.style"
           :attributeName="attribute.name"

@@ -1,13 +1,18 @@
 <template>
   <v-flex class="px-4" v-bind="getProps()">
     <component :is="getComponent()" v-model="rawResource" :attribute="getAttribute()" :errors="errors" @input="onChange()"/>
+    <debug :value="{attribute: getAttribute()}" />
   </v-flex>
 </template>
 <script>
 
 import { Attributes, container, HandleResource } from '@quartz/core'
+import Debug from './Debug'
 
 export default {
+  components: {
+    Debug
+  },
   props: ['manager', 'attributeName', 'attributeOptions', 'errors'],
   mixins: [ HandleResource ],
   methods: {
@@ -15,7 +20,7 @@ export default {
     getProps () {
       let obj = {};
 
-      obj[`xs${ this.getAttribute().style.size }`] = true;
+      obj[`xs${ this.getAttribute().raw.options.size }`] = true;
 
       return obj;
     },

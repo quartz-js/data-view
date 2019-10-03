@@ -13,7 +13,7 @@ export default {
     getProps () {
       let obj = {};
 
-      obj[`xs${ this.getAttribute().style.size }`] = true;
+      obj[`xs${ this.getAttribute().raw.options.size }`] = true;
 
       return obj;
     },
