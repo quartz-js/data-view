@@ -20,7 +20,7 @@ export default {
     getProps () {
       let obj = {};
 
-      obj[`xs${ this.getAttribute().raw.options.size }`] = true;
+      obj[`xs${ this.getAttribute().raw.options.size || 12 }`] = true;
 
       return obj;
     },
