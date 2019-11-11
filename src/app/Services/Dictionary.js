@@ -83,7 +83,7 @@ export class Dictionary {
 
   getViewByTag (tag) {
     return _.pickBy(container.get('$quartz.views'), (i) => {
-      return i.tag === tag
+      return i.tag && i.tag.split(",").indexOf(tag) !== -1
     })
   }
 
