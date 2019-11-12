@@ -94,6 +94,8 @@ export class Dictionary {
       if (!config.name) {
         config.name = i.name
       }
+      
+      config.id = i.id
 
       return config
     })
@@ -106,6 +108,12 @@ export class Dictionary {
   getViewsByParent (id) {
     return _.pickBy(container.get('$quartz.views'), (i) => {
       return i.parent_id === id
+    })
+  }
+
+  getViewById (id) {
+    return _.pickBy(container.get('$quartz.views'), (i) => {
+      return i.id == id
     })
   }
 

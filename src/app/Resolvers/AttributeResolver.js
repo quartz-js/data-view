@@ -6,24 +6,39 @@ import { DataResolver } from '../Services/DataResolver'
 export class AttributeResolver extends Resolver
 {
   resolve (data) {
+    let key = 0;
     data.components.filter(attr => {
       return attr.view.type === 'attribute'
     }).map((attr,key) => {
-      data.components[key] = this.resolveAttribute(data, attr)
+      data.components[key] = this.resolveAttribute(data, attr, key++)
     })
 
     return data
   }
-  resolveAttribute (data, attribute) {
+  resolveAttribute (data, attribute, i) {
     let name = data.name;
 
     let options = attribute.view.options;
 
     let attrClass = container.get('$quartz.attributes')[options.type] || Attributes.Base
 
+    console.log(options.type)
+    
+    let layout = _.get(options, 'layout', {
+      x: 0,
+      y: i,
+      w: 12,
+      h: ['LongText', 'Yaml'].indexOf(options.type) !== -1 ? 6 : 1
+    })
+
+    layout.id = attribute.view.id
+    layout.name = attribute.view.name
+    layout.i = i
+
     attribute.instance = new attrClass(options.name).fill({
       raw: attribute.view,
       name: options.name,
+      layout: layout,
       type: options.type || 'text',
       column: options.column,
       extract: options.extract,
