@@ -200,9 +200,6 @@ export default {
 </script>
 
 <style>
-.CodeMirror {
-  height: 250px !important
-}
 
 .theme--light.v-table tbody tr:hover:not(.v-datatable__expand-row) {
   background: initial !important;

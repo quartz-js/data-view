@@ -11,9 +11,8 @@
         :is-mirrored="false"
         :vertical-compact="true"
         :margin="[5, 5]"
-        :use-css-transforms="true"
-      >
-
+        :use-css-transforms="false"
+      >                                                                                                               
         <grid-item v-for="attribute in manager.attributes"
            v-if="!attribute.hide"
            :x="attribute.layout.x"
@@ -26,9 +25,8 @@
            @resized="save"
            @moved="save"
           >
-
           <component 
-            v-if="!attribute.hide"
+            :height="attribute.layout.h*90"
             v-on="$listeners"
             v-bind="$attrs"
             :is="toComponent('attribute-input')" 
@@ -97,6 +95,8 @@ export default {
     this.layout = this.manager.attributes.map(i => {
       return i.layout
     })
+
+    console.log(this.layout)
   }
 }
 </script>

@@ -10,7 +10,7 @@
         :is-mirrored="false"
         :vertical-compact="true"
         :margin="[5, 5]"
-        :use-css-transforms="true"
+        :use-css-transforms="false"
       >
 
         <grid-item v-for="attribute in manager.attributes"

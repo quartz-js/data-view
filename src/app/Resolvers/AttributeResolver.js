@@ -7,11 +7,11 @@ import _ from 'lodash'
 export class AttributeResolver extends Resolver
 {
   resolve (data) {
-    let key = 0;
+    let c = 0;
     data.components.filter(attr => {
       return attr.view.type === 'attribute'
     }).map((attr,key) => {
-      data.components[key] = this.resolveAttribute(data, attr, key++)
+      data.components[key] = this.resolveAttribute(data, attr, c++)
     })
 
     return data
@@ -27,7 +27,7 @@ export class AttributeResolver extends Resolver
       x: 0,
       y: i,
       w: 12,
-      h: ['LongText', 'Yaml'].indexOf(options.type) !== -1 ? 6 : 1
+      h: ['LongText', 'Yaml'].indexOf(options.type) !== -1 ? 3 : 1
     })
 
     layout.id = attribute.view.id

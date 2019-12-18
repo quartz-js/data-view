@@ -1,6 +1,6 @@
 <template>
-  <v-flex class="px-4" v-bind="getProps()">
-    <component :is="getComponent()" v-model="rawResource" :attribute="getAttribute()" :errors="errors" @input="onChange()"/>
+  <v-flex class="px-4">
+    <component :is="getComponent()" v-bind="$attrs" v-model="rawResource" :attribute="getAttribute()" :errors="errors" @input="onChange()"/>
     <debug :value="{attribute: getAttribute()}" />
   </v-flex>
 </template>
@@ -16,14 +16,6 @@ export default {
   props: ['manager', 'attributeName', 'attributeOptions', 'errors'],
   mixins: [ HandleResource ],
   methods: {
-
-    getProps () {
-      let obj = {};
-
-      obj[`xs${ this.getAttribute().raw.options.size || 12 }`] = true;
-
-      return obj;
-    },
 
     // Change based on Attribute Class
     getComponent() {
