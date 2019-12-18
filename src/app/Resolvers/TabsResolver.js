@@ -102,7 +102,7 @@ export class TabsResolver extends Resolver
     attribute.view.options.hide && attribute.instance.set('show', !attribute.view.options.hide);
     
     if (attribute.instance.style.include) {
-      attribute.instance.addHook('include', (includes) => {
+      attribute.instance.hook.add('include', (includes) => {
         includes.push(attribute.instance.style.include);
         return Promise.resolve(includes)
       })
@@ -117,7 +117,7 @@ export class TabsResolver extends Resolver
     keys.map(key => {
 
       if (attribute.view.options.query.include) {
-        attribute.instance.addHook('include', (includes) => {
+        attribute.instance.hook.add('include', (includes) => {
           includes.push(attribute.view.options.query.include.split(",").map(i => { return attribute.instance.name + "." + i}));
           return Promise.resolve(includes)
         })

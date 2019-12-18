@@ -8,7 +8,7 @@ export class EagerLoadingResolver extends Resolver
 
     this.dictionary.getDataByName(manager.data).relations.map(relation => {
       if (relation.type === 'HasOne' || relation.type === 'MorphOne' || relation.type === 'MorphToMany' || relation.type === 'BelongsToMany') {
-        manager.addHook('include', (includes) => {
+        manager.hook.add('include', (includes) => {
           includes = _.clone(includes)
 
           includes.push(relation.key);

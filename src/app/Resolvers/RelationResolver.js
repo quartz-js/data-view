@@ -54,7 +54,7 @@ export class RelationResolver extends AttributeResolver
       let view = this.dictionary.getViewByName(`${key}.resource.upsert`);
       
       if (relationers[key].select.include) {
-        attribute.instance.addHook('include', (includes) => {
+        attribute.instance.hook.add('include', (includes) => {
           includes.push(relationers[key].query.include.split(",").map(i => { return attribute.instance.name + "." + i}));
           return Promise.resolve(includes)
         })

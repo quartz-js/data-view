@@ -2,6 +2,7 @@ import { Resolver } from './Resolver'
 import { DataViewError } from '../Errors/DataViewError'
 import { Attributes, container, Translator } from '@quartz/core'
 import { DataResolver } from '../Services/DataResolver'
+import _ from 'lodash'
 
 export class AttributeResolver extends Resolver
 {
@@ -21,8 +22,6 @@ export class AttributeResolver extends Resolver
     let options = attribute.view.options;
 
     let attrClass = container.get('$quartz.attributes')[options.type] || Attributes.Base
-
-    console.log(options.type)
     
     let layout = _.get(options, 'layout', {
       x: 0,
@@ -64,7 +63,6 @@ export class AttributeResolver extends Resolver
       actions: _.map(options.actions, action => {
         return `data-view-${action}`
       }),
-      include: options.include,
       persist: options.persist,
       select: {
         manager: (resource) => {
@@ -82,6 +80,12 @@ export class AttributeResolver extends Resolver
     })
 
     data.manager.addAttribute(attribute.instance);
+
+    if (options.include) {
+      data.manager.hook.add('include', (includes) => {
+        return _.merge(includes, options.include)
+      })
+    }
 
     return attribute;
   }
