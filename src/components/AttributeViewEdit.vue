@@ -12,8 +12,9 @@
 	      	v-model="area"
 	        :items="items"
 	      ></v-select>
-	      <p v-if="area === 'global'">You will change the attribute in all views that this is invoked. Note that global configuration are overwritten by local one [ID: {{ read(area, 'id') }}]</p>
-	      <p v-if="area === 'local'">Apply the change only in this scope [ID: {{ read(area, 'id') }}]</p>
+
+	      <p v-if="area === 'global'">You will change the attribute in all views that this is invoked. Note that global configuration are overwritten by local one [ID: {{ get(area).id }}]</p>
+	      <p v-if="area === 'local'">Apply the change only in this scope [ID: {{ get(area).id }}]</p>
 
         <h3 class='subtitle-1 mt-5'>Wording</h3>
 
@@ -31,13 +32,13 @@
 	      ></v-select>
 
         <v-text-field 
-        	:label="$t('$quartz.data-view.hint')" 
+        	:label="$t('$quartz.data-view.options.hint')" 
         	:value="read(area, 'options.hint')" 
         	@input="put(area, 'options.hint', $event)" 
         />
 
         <v-text-field 
-        	:label="$t('$quartz.data-view.default')" 
+        	:label="$t('$quartz.data-view.options.default')" 
         	:value="read(area, 'options.default')" 
         	@input="put(area, 'options.default', $event)" 
         />
@@ -60,27 +61,28 @@
 
         <h3 class='subtitle-1 mt-5'>Yaml</h3>
 
-        <q-form-yaml class='my-3' :value="get(area)" @input="update(area, $event)"></q-form-yaml>
+        <q-form-yaml class='my-3' :value="get(area).content" @input="update(area, $event)"></q-form-yaml>
 
         <router-link :to="`/data-view/${attribute.raw.id}`" target='_blank'>View external</router-link>
 
 	      <div class='text-right mt-5'>
-	        
-	          <q-btn
-	            @click="form = false" 
-	            v-bind="$attrs"
-	            content-icon='close'
-	            :content-text="$t('$quartz.core.cancel')"
-	          />
 
-	          <q-btn
-	            :loading="loading"
-	            :disabled="loading"
-	            color="primary" 
-	            @click="save(get(area))"
-	            content-icon='add'
-	            :content-text="$t('$quartz.core.save')"
-	          />
+          <q-btn
+            @click="form = false" 
+            v-bind="$attrs"
+            content-icon='close'
+            :content-text="$t('$quartz.core.cancel')"
+          />
+
+          <q-btn
+            :loading="loading"
+            :disabled="loading"
+            color="primary" 
+            @click="save(area)"
+            content-icon='add'
+            :content-text="$t('$quartz.core.save')"
+          />
+
 	      </div>
 	    </div>
 		</q-form>
@@ -140,19 +142,19 @@ export default {
 	methods: {
 		update(area, $event) {
 			if (area === 'local') {
-				this.attribute.view.local = $event
+				this.attribute.view.local.content = $event
 			} else {
-				this.attribute.view.global = $event
+				this.attribute.view.global.content = $event
 			}
 		},
 		get(area) {
 			return area === 'local' ? this.attribute.view.local : this.attribute.view.global
 		},
 		read (area, path) {
-			return _.get(new YAWN(this.get(area)).toJSON(), path)
+			return _.get(new YAWN(this.get(area).content).toJSON(), path)
 		},
 		put (area, path, value) {
-			let yawn = new YAWN(this.get(area));
+			let yawn = new YAWN(this.get(area).content);
 			let json = yawn.toJSON()
 			_.set(json, path, value)
 			yawn.json = json
@@ -160,13 +162,13 @@ export default {
 		},
 		save(area){
       this.loading = true;
-
-      return this.$container.get('data-view').newApiByName('data-view').update(this.read(area, 'id'), {
-        config: this.get(area)
+      return this.$container.get('data-view').newApiByName('data-view').update(this.get(area).id, {
+        config: this.get(area).content
       }).then(response => {
       	return Promise.resolve(1)
       }).finally(response => {
         this.loading = false;
+        this.form = false
       })
 		}
 	}

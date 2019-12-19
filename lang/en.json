@@ -1,9 +1,13 @@
 {
   "$quartz": {
     "data-view": {
-      "hide": "Hide",
-      "size": "Size",
-      "label": "Label"
+      "options": {
+        "name": "Name",
+        "hint": "Hint",
+        "default": "Default",
+        "hide": "Hide",
+        "required": "Required"
+      }
     }
   }
 }

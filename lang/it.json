@@ -1,9 +1,13 @@
 {
   "$quartz": {
     "data-view": {
-      "hide": "Nascondi",
-      "size": "Size",
-      "label": "Label"
+      "options": {
+        "name": "Nome",
+        "hint": "Suggerimento",
+        "default": "Default",
+        "hide": "Nascondi",
+        "required": "Obbligatorio"
+      }
     }
   }
 }
