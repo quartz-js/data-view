@@ -3,7 +3,7 @@ import VueGridLayout from 'vue-grid-layout';
 export var EnableConfig = {
   data() {
     return {
-      config: false
+      config: false,
     }
   },
   components: {

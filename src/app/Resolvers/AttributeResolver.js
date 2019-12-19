@@ -36,6 +36,10 @@ export class AttributeResolver extends Resolver
 
     attribute.instance = new attrClass(options.name).fill({
       raw: attribute.view,
+      view: {
+        local: attribute.raw.local,
+        global: attribute.raw.global
+      },
       name: options.name,
       layout: layout,
       type: options.type || 'text',

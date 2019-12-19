@@ -27,10 +27,10 @@
            @moved="save"
           >
 
-          <div v-if="config" class="component-actions">
+          <v-layout v-if="config" class="component-actions">
             <v-btn text icon color="primary" class="component-draggable"><v-icon>control_camera</v-icon></v-btn>
-            <v-btn text icon color="primary" class="component-editable"><v-icon>edit</v-icon></v-btn>
-          </div>
+            <attribute-view-edit :attribute='attribute' class="component-editable" />
+          </v-layout>
 
           <div v-if="config" class="placeholder"></div>
 
@@ -79,10 +79,12 @@ import { Utils } from '../app/Helpers/Utils'
 import { CommonResource } from '../mixins/CommonResource'
 import Debug from './Debug'
 import { EnableConfig } from '../mixins/EnableConfig'
+import AttributeViewEdit from './AttributeViewEdit'
 
 export default {
   components: {
-    Debug
+    Debug,
+    AttributeViewEdit
   },
   mixins: [
     CommonResource,
@@ -112,7 +114,11 @@ export default {
   .component-actions {
     position: absolute;
     right: 0;
-    z-index: 2;
+    z-index: 1;
+  }
+
+  .component-editable {
+    position: relative;
   }
 
   .component-draggable, .component-draggable * {
@@ -121,7 +127,7 @@ export default {
 
   .placeholder {
     position: absolute;
-    z-index: 1;
+    z-index: 0;
     top: -2px;
     left: -2px;
     right: -2px;
@@ -130,12 +136,10 @@ export default {
     cursor: disabled;
   }
 
-
-</style>
-<style>
-
-  .vue-resizable-handle {
-    z-index: 3;
+  .vue-grid-item.active .attribute-input {
+    position: relative;
+    z-index: -1;
   }
+
 
 </style>

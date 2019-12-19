@@ -15,7 +15,15 @@ export class ComponentResolver extends Resolver
       let component = {};
 
       component.name = attributeName
-      component.view = this.mergeWithBase(data.name, components[component.name]);
+
+      let rawComponent = components[component.name];
+
+      component.raw = {
+        local: rawComponent.raw,
+        global: rawComponent ? this.dictionary.getViewByName(rawComponent.include).raw : null
+      }
+
+      component.view = this.mergeWithBase(data.name, rawComponent);
 
 
       if (!component.view) {

@@ -52,7 +52,9 @@ export class Dictionary {
   parseItemDataView (item) {
 
     item.priority = 1;
+    item.raw = item.config
     item.config = item.processed
+    item.processed.raw = item.raw
 
     if (item.config.icon) {
       item.config.icon = this.parseUrlResource(item.config.icon)
