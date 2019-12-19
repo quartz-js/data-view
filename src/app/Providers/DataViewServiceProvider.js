@@ -22,7 +22,7 @@ export class DataViewServiceProvider extends ServiceProvider {
       'LongTextAttribute': 'q-attr-textarea',
       'EmailAttribute': 'q-attr-text',
       'PasswordAttribute': 'q-attr-secret',
-      'BooleanAttribute': 'q-attr-switch',
+      'BooleanAttribute': 'q-attr-checkbox',
       'EnumAttribute': 'q-attr-select',
       'YamlAttribute': 'q-attr-yaml',
       'HtmlAttribute': 'q-attr-html',
