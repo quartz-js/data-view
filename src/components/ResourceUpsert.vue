@@ -22,10 +22,20 @@
            :i="attribute.layout.i"
            :key="attribute.layout.i"
            :class="{'active': config}"
+           drag-ignore-from=".component-editable,.placeholder"
            @resized="save"
            @moved="save"
           >
+
+          <div v-if="config" class="component-actions">
+            <v-btn text icon color="primary" class="component-draggable"><v-icon>control_camera</v-icon></v-btn>
+            <v-btn text icon color="primary" class="component-editable"><v-icon>edit</v-icon></v-btn>
+          </div>
+
+          <div v-if="config" class="placeholder"></div>
+
           <component 
+            class="attribute-input"
             :height="attribute.layout.h*90"
             v-on="$listeners"
             v-bind="$attrs"
@@ -95,8 +105,37 @@ export default {
     this.layout = this.manager.attributes.map(i => {
       return i.layout
     })
-
-    console.log(this.layout)
   }
 }
 </script>
+<style scoped>
+  .component-actions {
+    position: absolute;
+    right: 0;
+    z-index: 2;
+  }
+
+  .component-draggable, .component-draggable * {
+    cursor: move;
+  }
+
+  .placeholder {
+    position: absolute;
+    z-index: 1;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: rgba(0,0,0, 0.03);
+    cursor: disabled;
+  }
+
+
+</style>
+<style>
+
+  .vue-resizable-handle {
+    z-index: 3;
+  }
+
+</style>
