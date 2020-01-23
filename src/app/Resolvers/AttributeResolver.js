@@ -41,6 +41,7 @@ export class AttributeResolver extends Resolver
         global: attribute.raw.global
       },
       name: options.name,
+      multiple: options.multiple || false,
       layout: layout,
       type: options.type || 'text',
       column: options.column,
@@ -67,7 +68,14 @@ export class AttributeResolver extends Resolver
       actions: _.map(options.actions, action => {
         return `data-view-${action}`
       }),
-      persist: options.persist,
+      persist: _.merge(
+        {
+          manager: options.persist.data ? (resource) => {
+            return new DataResolver().createManager(container.get('data-view').getViewByName(options.persist.data.name + ".resource.upsert"))
+          } : undefined 
+        },
+        options.persist
+      ),
       select: {
         manager: (resource) => {
           return options.select.data ? new DataResolver().createManager(container.get('data-view').getViewByName(options.select.data + ".resource.upsert")) : null
