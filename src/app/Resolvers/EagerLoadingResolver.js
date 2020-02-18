@@ -4,17 +4,20 @@ import { DataViewError } from '../Errors/DataViewError'
 export class EagerLoadingResolver extends Resolver
 {
   resolve (data) {
+
     let manager = data.manager;
 
-    this.dictionary.getDataByName(manager.data).relations.map(relation => {
-      if (relation.type === 'HasOne' || relation.type === 'MorphOne' || relation.type === 'MorphToMany' || relation.type === 'BelongsToMany') {
-        manager.hook.add('include', (includes) => {
-          includes = _.clone(includes)
+    data.components.map(i => {
+      return i.view.options.include
+    }).filter(i => i).map(include => {
 
-          includes.push(relation.key);
-          return Promise.resolve(includes)
-        })
-      }
+      manager.hook.add('include', (includes) => {
+        includes = _.clone(includes)
+
+        includes.push(include);
+        return Promise.resolve(includes)
+      })
+
     });
 
     return data;

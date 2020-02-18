@@ -86,8 +86,10 @@ export class DataViewServiceProvider extends ServiceProvider {
     this.dictionary = container.get('data-view')
 
     return adminApi.index().then(response => {
+      
       let lang = container.get('settings').get('language', 'en')
       this.addLang({[lang]: {"$quartz": { data: response.body.lang}}})
+
       // return this.dictionary.addData(JSON.parse(response.bodyText).data);
       return this.dictionary.addData(response.body.data);
     }).then(response => {

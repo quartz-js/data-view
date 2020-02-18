@@ -16,7 +16,7 @@ export class DataResolver {
       new ManagerResolver,
       new ComponentResolver,
       new AttributeResolver,
-      new TabsResolver,
+      // new TabsResolver,
       new EagerLoadingResolver
     ]
   }

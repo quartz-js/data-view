@@ -15,7 +15,7 @@ export class ManagerResolver extends Resolver
       route: view.config.label,
       manager: this.dictionary.newApiByUrl(view.config.options.api),
       icon: view.config.icon,
-      descriptor: this.dictionary.getDataByName(view.config.options.data).descriptor,
+      // descriptor: this.dictionary.getDataByName(view.config.options.data).descriptor,
       readable: view.config.options.readable,
       attributes: []
     });

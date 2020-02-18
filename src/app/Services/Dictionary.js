@@ -138,32 +138,4 @@ export class Dictionary {
   newApiByName(name) {
     return this.newApiByUrl(this.getViewByName(name + ".resource.show").config.options.api);
   }
-
-  findAttributeByName (dataName, attributeName) {
-    let data = this.getDataByName(dataName);
-
-    return _.find(data.attributes, attribute => {
-      return attribute.name === attributeName
-    })
-  }
-
-  findRelationByName (dataName, relationName) {
-    let data = this.getDataByName(dataName);
-
-    return _.find(data.relations, attribute => {
-      return attribute.key === relationName
-    })
-  }
-
-  getDataByName (dataName) {
-    let data = container.get('$quartz.data').find((item) => {
-      return item.name === dataName;
-    })
-
-    if (!data) {
-      throw new DataViewError(`Cannot find data with name ${dataName}`)
-    }
-
-    return _.cloneDeep(data);
-  }
 };

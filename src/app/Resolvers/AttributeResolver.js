@@ -34,6 +34,7 @@ export class AttributeResolver extends Resolver
     layout.name = attribute.view.name
     layout.i = i
 
+
     attribute.instance = new attrClass(options.name).fill({
       raw: attribute.view,
       view: {
@@ -56,12 +57,12 @@ export class AttributeResolver extends Resolver
       default: (resource) => {
         return options.default;
       },
-      options: _.get(options, 'items', []).map(item => { 
+      options: Object.values(_.map(_.get(options, 'items', []), (item, key) => { 
         return {
-          label: item,
+          label: key,
           value: item
         }
-      }),
+      })),
       fixed: (resource) => {
         return _.get(options, 'fixed', undefined)
       },
