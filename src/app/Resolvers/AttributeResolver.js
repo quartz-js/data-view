@@ -41,6 +41,7 @@ export class AttributeResolver extends Resolver
         local: attribute.raw.local,
         global: attribute.raw.global
       },
+      condition: options.condition || '1',
       name: options.name,
       multiple: options.multiple || false,
       layout: layout,
@@ -57,12 +58,7 @@ export class AttributeResolver extends Resolver
       default: (resource) => {
         return options.default;
       },
-      options: Object.values(_.map(_.get(options, 'items', []), (item, key) => { 
-        return {
-          label: key,
-          value: item
-        }
-      })),
+      options: this.resolveAttributeOptions(options),
       fixed: (resource) => {
         return _.get(options, 'fixed', undefined)
       },
@@ -72,16 +68,21 @@ export class AttributeResolver extends Resolver
       persist: _.merge(
         {
           manager: options.persist.data ? (resource) => {
-            return new DataResolver().createManager(container.get('data-view').getViewByName(options.persist.data.name + ".resource.upsert"))
+
+            let name = container.get('template').parse(options.persist.data.name + ".resource.upsert", {resource: resource});
+
+            return new DataResolver().createManager(container.get('data-view').getViewByName(name))
           } : undefined 
         },
         options.persist
       ),
       select: {
         manager: (resource) => {
-          return options.select.data ? new DataResolver().createManager(container.get('data-view').getViewByName(options.select.data + ".resource.upsert")) : null
+          let name = container.get('template').parse(options.select.data + ".resource.upsert", {resource: resource});
+
+          return options.select.data ? new DataResolver().createManager(container.get('data-view').getViewByName(name)) : null
         },
-        api: options.select.data ? container.get('data-view').newApiByName(options.select.data) : null,
+        api: options.select.data,
         include: options.select.include,
         query: options.select.query,
         label: options.select.label
@@ -100,6 +101,29 @@ export class AttributeResolver extends Resolver
       })
     }
 
+    attribute.instance.boot()
+
     return attribute;
+  }
+
+  resolveAttributeOptions(config)
+  {
+    let options = _.get(config, 'items', [])
+
+    let resolver = Array.isArray(options) ? (item) => { 
+      return {
+        label: item,
+        value: item
+      }
+    } : (item, key) => {
+      return {
+        label: item,
+        value: key
+      }
+    }
+    
+    let obj = Object.values(_.map(options, resolver))
+
+    return obj;
   }
 }

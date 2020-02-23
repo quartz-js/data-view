@@ -7,7 +7,7 @@ export class EagerLoadingResolver extends Resolver
 
     let manager = data.manager;
 
-    data.components.map(i => {
+    data.components.filter(i => i.view && i.view.options).map(i => {
       return i.view.options.include
     }).filter(i => i).map(include => {
 

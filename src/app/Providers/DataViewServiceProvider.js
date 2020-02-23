@@ -38,6 +38,7 @@ export class DataViewServiceProvider extends ServiceProvider {
       'BelongsToMany': 'q-attr-belongs-to-many',
       'ObjectAttribute': 'q-attr-json',
       'HtmlAttribute': 'q-attr-html',
+      'DataNameAttribute': 'q-attr-text',
       'autocomplete': 'q-attr-autocomplete',
     });
 
@@ -57,6 +58,33 @@ export class DataViewServiceProvider extends ServiceProvider {
       'en': require('../../../lang/en.json'),
       'it': require('../../../lang/it.json')
     })
+
+    container.get('template').extendFilter('mapByKey', (value, args) => {
+      return value.map(i => _.get(i, args[0]))
+    })
+    
+    container.get('template').extendFunction('values', (obj, fields) => {
+      return fields.map( i => {
+        return _.get(obj, i)
+      })
+    })
+
+    container.get('template').extendFunction('data', (value) => {
+      let view = container.get('data-view').getViewByName(value + ".resource.upsert");
+      let manager = new DataResolver().createManager(view);
+      return manager;
+    })
+
+    container.get('template').extendFunction('hasData', (value) => {
+      try {
+        let view = container.get('data-view').getViewByName(value + ".resource.upsert");
+
+        return true;
+      } catch (e) {
+        return false;
+      }
+    })
+
   }
 
   boot() {

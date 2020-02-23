@@ -5,7 +5,7 @@
         <v-layout row wrap align-end>
           <component 
             v-for="attribute in manager.attributes"
-            v-if="attribute.fillable && attribute.show"
+            v-if="attribute.fillable && attribute.show && $container.get('template').parse(attribute.condition, { resource: resource })"
             v-bind="$attrs"
             :is="toComponent(attribute.style.extends ? attribute.style.extends : 'attribute-input')" 
             :resource="scope.resource"

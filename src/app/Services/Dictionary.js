@@ -1,19 +1,21 @@
 import { container, Attributes, ResourceApi, Manager, Helper, Interceptor } from '@quartz/core'
 import _ from 'lodash'
 import { DataViewError } from '../Errors/DataViewError'
+var yaml = require('js-yaml');
 
 export class Dictionary {
 
   addViews (views) {
 
-    views = this.onParseDataViews(views);
 
     views = _.map(views, item => {
       return this.parseItemDataView(item);
     })
 
+    // views = this.onParseDataViews(views);
+
     views = _.mapKeys(views, (val, key) => {
-      return val.name;
+      return this.removeObjectReferences(val.name);
     })
 
     container.set('$quartz.views', _.assignIn(container.get('$quartz.views', {}), views));
@@ -48,13 +50,27 @@ export class Dictionary {
     return items;
   }
 
+  replaceAll(str, find, replace) {
+    return str.replace(new RegExp(find, 'g'), replace);
+  }
+
+  removeObjectReferences(str)
+  {
+    str = str.replace(/~([a-z0-9_\-]{1,})\.([a-z0-9_\-]{1,})~/gi, '$2')
+    str = str.replace(/~([a-z0-9_\-]{1,})~/gi, '$1')
+
+    return str
+  }
 
   parseItemDataView (item) {
 
+    let config = this.removeObjectReferences(item.config)
+
+    config = yaml.load(config)
+
+    item.name = this.removeObjectReferences(item.name)
+    item.config = config
     item.priority = 1;
-    item.raw = item.config
-    item.config = item.processed
-    item.processed.raw = item.raw
 
     if (item.config.icon) {
       item.config.icon = this.parseUrlResource(item.config.icon)
