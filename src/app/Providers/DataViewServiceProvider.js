@@ -26,6 +26,7 @@ export class DataViewServiceProvider extends ServiceProvider {
       'EnumAttribute': 'q-attr-select',
       'YamlAttribute': 'q-attr-yaml',
       'HtmlAttribute': 'q-attr-html',
+      'DateAttribute': 'q-attr-date',
       'DateTimeAttribute': 'q-attr-datetime',
       'BelongsToAttribute': 'q-attr-belongs-to',
       'MorphToAttribute': 'q-attr-morph-to',
