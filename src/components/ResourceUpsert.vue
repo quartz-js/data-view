@@ -45,6 +45,7 @@
             :attributeName="attribute.name"
             :errors="scope.errors"
             :manager="manager"
+            :action="resource ? 'update' : 'create'"
           />
         </grid-item>
       </grid-layout>

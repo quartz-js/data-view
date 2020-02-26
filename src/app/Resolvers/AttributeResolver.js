@@ -52,6 +52,7 @@ export class AttributeResolver extends Resolver
       fillable: _.get(options, 'fillable', true),
       required: options.required,
       unique: options.unique,
+      mutable: options.mutable,
       hide: _.get(options, 'hide', false),
       label: _.get(options, 'label', (new Translator).translate(name, options.name, 'name')),
       hint: _.get(options, 'hint', container.get('translator').t(attribute.hint)),
