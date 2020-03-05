@@ -5,7 +5,7 @@ import { TabsResolver } from '../Resolvers/TabsResolver'
 import { ComponentResolver } from '../Resolvers/ComponentResolver'
 import { EagerLoadingResolver } from '../Resolvers/EagerLoadingResolver'
 import { DataViewError } from '../Errors/DataViewError'
-import { Interceptor } from '@quartz/core'
+import { Interceptor, container } from '@quartz/core'
 
 
 export class DataResolver {
@@ -46,4 +46,9 @@ export class DataResolver {
 
     return data.manager;
   }
+
+  createManagerByName(name) {
+    return this.createManager(container.get('data-view').getViewByName(name + '.resource.upsert'));
+  }
+
 };

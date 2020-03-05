@@ -94,12 +94,6 @@ export class DataViewServiceProvider extends ServiceProvider {
       return;
     }
 
-    if (container.get('config').app.websocket.url) {
-      window.Echo.channel('mapper').listen('.update', (e) => {
-        this.reload(`name ct "${e.model}" and type eq 'component'`);
-      })
-    }
-
     container.set('$quartz.view.components', []);
     container.set('$quartz.view.services', []);
     container.set('$quartz.view.routes', []);
