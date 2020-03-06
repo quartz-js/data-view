@@ -1,6 +1,7 @@
 import { Resolver } from './Resolver'
 import { Manager, Interceptor } from '@quartz/core'
 import _ from 'lodash'
+import { DataResolver } from '../Services/DataResolver'
 
 export class ManagerResolver extends Resolver
 {
@@ -17,6 +18,14 @@ export class ManagerResolver extends Resolver
       icon: view.config.icon,
       // descriptor: this.dictionary.getDataByName(view.config.options.data).descriptor,
       readable: view.config.options.readable,
+      persist: view.config.options.persist ? _.merge(
+        {
+          manager: view.config.options.persist.data ? (resource) => {
+            return new DataResolver().createManagerByName(view.config.options.persist.data.name)
+          } : undefined 
+        },
+        view.config.options.persist
+      ) : null,
       attributes: []
     });
     

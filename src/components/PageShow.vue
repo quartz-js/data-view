@@ -1,6 +1,6 @@
 <template>
   <div >
-    <component :is="component" :config="manager" v-bind="$attrs" v-if="view">
+    <component :is="component" :config="manager" v-bind="$attrs" v-if="view" class="page-show">
       <template slot='body' slot-scope="scope">
         <q-tabs class='show-tabs my-4' v-model="tabs">
           <v-tab flat tile :key="key" v-for="(component, key, index) in components" v-if="hasComponent(component)" >{{ key }}</v-tab>
@@ -15,6 +15,7 @@
             <component 
               :is="toComponent(component.extends)"
               :resource="toResource(component, scope.resource)" 
+              :vars="{containerResource: scope.resource}"
               v-bind="$attrs"
               :prefix="manager.name"
               :options="mergeOptions(options, component.options, scope.resource)"
@@ -94,3 +95,9 @@ export default {
   }
 }
 </script>
+<style>
+  .page-show .v-slide-group__wrapper {
+    background: white !important;
+    border: 2px solid #efefef;
+  }
+</style>

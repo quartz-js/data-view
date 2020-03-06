@@ -6,7 +6,23 @@ import _ from 'lodash'
 
 export var Common = {
   mixins: [ResourceLocalization],
-  props: ['rawView', 'options', 'prefix'],
+  props: {
+    rawView: {
+
+    },
+    options: {
+
+    },
+    prefix: {
+
+    },
+    vars: {
+      type: Object,
+      default: function() {
+        return {}
+      }
+    }
+  },
   data() {
     return {
       view: null,
@@ -47,6 +63,10 @@ export var Common = {
 
       if (this.$attrs.onManagerLoad) {
         this.$attrs.onManagerLoad(this.manager);
+      }
+
+      if (this.vars) {
+        this.manager.vars = this.vars
       }
 
       if (!this.manager) {
