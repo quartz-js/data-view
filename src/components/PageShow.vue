@@ -24,15 +24,6 @@
           </v-tab-item>
         </q-tabs>
       </template>
-
-      <template slot='actions' slot-scope="scope">
-        <component 
-          v-for="component in resourceComponents" 
-          :is="toComponent(component.extends)" 
-          :resource="scope.resource" 
-          :options="mergeOptions(options, component.options)" 
-          v-bind="$attrs"/>
-      </template>
     </component>
     <resource-settings :name="manager.data" :view="view" />
   </div>
@@ -67,10 +58,6 @@ export default {
   },
   created() {
     this.createManagerByName(this.view.config.label)
-
-    if (this.view.config.options.actions) {
-      this.resourceComponents = this.view.config.options.actions.resource
-    }
 
     this.component = Interceptor.resolve('pageShowOnRetrieve', {
       manager: this.manager,

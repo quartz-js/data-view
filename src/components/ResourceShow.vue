@@ -52,10 +52,10 @@
     <template slot='actions' slot-scope="scope">
       <component 
         v-for="component in resourceComponents" 
-        :is="toComponent(component.extends)" 
+        :is="toComponent(component.config.extends)" 
         :manager="manager"
         :resource="scope.resource" 
-        :options="mergeOptions(options, component.options)" 
+        :options="mergeOptions(options, component.config.options)" 
         v-bind="$attrs"/>
     </template>
   </q-resource-show>
@@ -87,7 +87,8 @@ export default {
     this.layout = this.manager.attributes.map(i => {
       return i.layout
     })
-    this.resourceComponents = this.view.config.options.actions.resource
+
+    this.resourceComponents = this.$container.get('data-view').getActionsByView(this.view.id, 'resource')
   }
 }
 </script>

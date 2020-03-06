@@ -123,7 +123,6 @@ export class DataViewServiceProvider extends ServiceProvider {
 
         _.map(views, item => {
 
-
           if (item.type === 'component') {
             this.registerDataViewComponent(item);
           }

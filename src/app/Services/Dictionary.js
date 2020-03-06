@@ -123,6 +123,12 @@ export class Dictionary {
     })
   }
 
+  getActionsByView (id, scope) {
+    return _.pickBy(this.getViewsByParent(id), (i) => {
+      return i.config.type === 'action' && i.config.scope === scope
+    })
+  }
+
   getViewsByParent (id) {
     return _.pickBy(container.get('$quartz.views'), (i) => {
       return i.parent_id === id
