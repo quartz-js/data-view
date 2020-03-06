@@ -2,10 +2,28 @@
   <div>
     <component v-if="manager" :is="component" v-bind="$attrs" :config="manager">
       <template slot='top' slot-scope="scope">
-        <component v-for="component in globalComponents" :is="toComponent(component.config.extends)" :resource="scope.resource" :options="mergeOptions(options, component.config.options)" v-bind="$attrs" :vars="vars"/>
+        <component 
+          v-for="component in globalComponents" 
+          :view="component.config"
+          :is="toComponent(component.config.extends)" 
+          :resource="scope.resource" 
+          :options="mergeOptions(options, component.config.options)" 
+          v-bind="$attrs" 
+          :vars="vars"
+        />
       </template>
       <template slot='actions' slot-scope="scope">
-        <component v-for="component in resourceComponents" :is="toComponent(component.config.extends)" :resource="scope.resource" :manager="manager" :options="mergeOptions(options, component.config.options)" v-bind="$attrs" activatorType='q-btn-table' :vars="vars"/>
+        <component
+          v-for="component in resourceComponents" 
+          :view="component.config"
+          :is="toComponent(component.config.extends)" 
+          :resource="scope.resource"
+          :manager="manager"
+          :options="mergeOptions(options, component.config.options)"
+          v-bind="$attrs"
+          activatorType='q-btn-table'
+          :vars="vars"
+        />
       </template>
     </component>
   </div>

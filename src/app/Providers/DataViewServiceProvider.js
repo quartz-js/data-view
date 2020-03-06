@@ -55,6 +55,8 @@ export class DataViewServiceProvider extends ServiceProvider {
     this.registerComponent("DataViewAttributeInput", require('../../components/AttributeInput').default)
     this.registerComponent("DataViewAttributeShow", require('../../components/AttributeShow').default)
 
+    this.registerComponent("DataViewResourceExecute", require('../../components/ResourceExecute').default)
+
     this.addLang({
       'en': require('../../../lang/en.json'),
       'it': require('../../../lang/it.json')
