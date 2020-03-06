@@ -1,11 +1,11 @@
 <template>
-  <div >
+  <div>
     <component :is="component" :config="manager" v-bind="$attrs" v-if="view" class="page-show">
       <template slot='body' slot-scope="scope">
-        <q-tabs class='show-tabs my-4' v-model="tabs">
+        <q-tabs class='show-tabs' v-model="tabs">
           <v-tab flat tile :key="key" v-for="(component, key, index) in components" v-if="hasComponent(component)" >{{ key }}</v-tab>
           <v-tab-item 
-            v-bind:class="{'ml-4': $container.get('style.q-tabs.vertical'), 'mt-4': !$container.get('style.q-tabs.vertical')}"
+            v-bind:class="{'ml-5': $container.get('style.q-tabs.vertical'), 'mt-5': !$container.get('style.q-tabs.vertical')}"
             :key="key" 
             v-for="(component, key, index) in components" 
             :transition="false" 
