@@ -4,7 +4,7 @@
     v-bind="$attrs"
     color="primary"
     content-icon='mdi-play'
-    content-text="execute"
+    :content-text="view.label"
   />
 </template>
 <script>
@@ -22,7 +22,7 @@ export default {
         let data = this.view.options.http.body
 
         data = _.mapValues(data, (item, key) => {
-          return this.$container.get('template').parse(item, {resource: this.resource})
+          return typeof item === 'string' ? this.$container.get('template').parse(item, {resource: this.resource}) : item
         })
 
         api.persist(this.view.options.http.query, {data: data}).then(i => {
