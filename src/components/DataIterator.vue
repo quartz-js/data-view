@@ -9,6 +9,7 @@
           :resource="scope.resource" 
           :options="mergeOptions(options, component.config.options)" 
           v-bind="$attrs" 
+          activatorType='q-btn'
           :vars="vars"
         />
       </template>
