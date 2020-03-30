@@ -92,10 +92,6 @@ export class DataViewServiceProvider extends ServiceProvider {
 
   boot() {
 
-    if (!container.get('user')) {
-      return;
-    }
-
     container.set('$quartz.view.components', []);
     container.set('$quartz.view.services', []);
     container.set('$quartz.view.routes', []);
@@ -139,6 +135,8 @@ export class DataViewServiceProvider extends ServiceProvider {
         })
 
       })
+    }).catch(response => {
+      
     })
   }
 
@@ -158,10 +156,22 @@ export class DataViewServiceProvider extends ServiceProvider {
 
     item.config.map(route => {
       route.component = {
-        template: `<${Utils.nameToComponent(route.component)}/>`
+        data() {
+          return {
+            view: null
+          }
+        },
+        template: `<${Utils.nameToComponent(route.component)} :rawView='view'/>`,
+        mounted () {
+          this.view = (new Dictionary).getViewByName(item.name)
+        },
       }
 
-      this.addRoutes('app', route);
+      this.addRoutes(route.container, {
+        name: route.name,
+        path: route.path,
+        component: route.component
+      });
     });
     //
   }
@@ -179,7 +189,6 @@ export class DataViewServiceProvider extends ServiceProvider {
     }
 
     this.registerComponent(Utils.nameToComponent(item.name), {
-
       data() {
         return {
           view: null
