@@ -5,6 +5,7 @@
     color="primary"
     content-icon='mdi-play'
     :content-text="view.label"
+    :loading="loading"
   />
 </template>
 <script>
@@ -14,8 +15,19 @@ import _ from 'lodash'
 
 export default {
   props: ['view', 'manager', 'resource', 'activatorType'],
+  data() {
+    return {
+      loading: false
+    }
+  },
   methods: {
     execute() {
+      if (this.loading) {
+        return;
+      }
+
+      this.loading = true;
+
       if (this.view.options.http) {
         let api = this.$container.get('data-view').newApiByUrl(this.view.options.http.url)
 
@@ -25,13 +37,17 @@ export default {
           return typeof item === 'string' ? this.$container.get('template').parse(item, {resource: this.resource}) : item
         })
 
-        api.persist(this.view.options.http.query, {data: data}).then(i => {
+        api.persist(this.view.options.http.query, {queue: 1, data: data}).then(i => {
           window.bus.$emit("message", {
             message: "Your request has been sent",
             type: "info"
           });
 
-          bus.$emit(this.manager.resourceEvent("updated"), null);
+          if (this.manager) {
+            bus.$emit(this.manager.resourceEvent("updated"), null);
+          }
+        }).finally(i => {
+          this.loading = false
         })
       }
     }
