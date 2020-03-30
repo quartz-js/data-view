@@ -12,7 +12,7 @@ export default {
     getComponent() {
       let attribute = this.getAttribute().getClassName()
 
-      return 'q-show-text'
+      return attribute.showComponent
 
       throw `Cannot find a valid component for attribute ${this.manager.name}:${this.attributeName}:${attribute}`
     },
