@@ -49,7 +49,7 @@ export default {
     
     this.manager = new DataResolver().createManagerByName('data-view')
 
-      window.Echo.channel('presence-global').listen('DataViewFlush', (e) => {
+      window.Echo.channel('presence-global').listen('.data-view.flush', (e) => {
         console.log(e)
         this.dialog = true;
       })
