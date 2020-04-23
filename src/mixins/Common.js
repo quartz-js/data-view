@@ -101,7 +101,6 @@ export var Common = {
 
     fillFixed(fixed)
     {
-      console.log(fixed);
       /*fixed: (resource) => {
         return _.get(options, 'fixed', undefined)
       },*/
