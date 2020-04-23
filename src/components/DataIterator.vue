@@ -58,7 +58,6 @@ export default {
   },
   created() {
     this.createManager();
-    console.log(this.view.config)
 
     this.resourceComponents = this.$container.get('data-view').getActionsByView(this.view.id, 'resource')
     this.globalComponents = this.$container.get('data-view').getActionsByView(this.view.id, 'global')
