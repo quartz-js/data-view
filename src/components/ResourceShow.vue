@@ -29,8 +29,7 @@
               v-bind="$attrs"
               :is="toComponent('attribute-show')" 
               :resource="scope.resource"
-              :attributeOptions="attribute.style"
-              :attributeName="attribute.name"
+              :attribute="attribute"
               :errors="scope.errors"
               :manager="manager"
               class="ma-2"
@@ -57,6 +56,7 @@
         :resource="scope.resource" 
         :options="mergeOptions(options, component.config.options)" 
         v-bind="$attrs"/>
+      
     </template>
   </q-resource-show>
 </template>

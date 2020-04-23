@@ -1,6 +1,7 @@
 <template>
   <div>
     <component v-if="manager" :is="component" v-bind="$attrs" :config="manager">
+      
       <template slot='top' slot-scope="scope">
         <component 
           v-for="component in globalComponents" 

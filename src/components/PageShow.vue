@@ -63,6 +63,16 @@ export default {
       manager: this.manager,
       component: 'q-page-show'
     }).component
+
+    _.map(this.components, (i) => {
+      // Add child requirement for include
+
+      if (i.options && i.options.containerInclude) {
+        this.manager.hook.add('include', (includes) => {
+          return [].concat(includes, i.options.containerInclude)
+        })
+      }
+    })
   },
   methods: {
     hasComponent(component) {

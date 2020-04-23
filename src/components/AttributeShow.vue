@@ -1,24 +1,13 @@
 <template>
-  <component :is="getComponent()" :resource="resource" :attribute="getAttribute()" :errors="errors"/>
+  <component :is="attribute.showComponent" :resource="resource" :attribute="attribute" :errors="errors"/>
 </template>
 <script>
 
 import { Attributes } from '@quartz/core'
 
 export default {
-  props: ['resource', 'manager', 'attributeName', 'attributeOptions', 'errors'],
+  props: ['resource', 'manager', 'attribute', 'errors'],
   methods: {
-    // Change based on Attribute Class
-    getComponent() {
-      let attribute = this.getAttribute().getClassName()
-
-      return attribute.showComponent
-
-      throw `Cannot find a valid component for attribute ${this.manager.name}:${this.attributeName}:${attribute}`
-    },
-    getAttribute() {
-      return this.manager.getAttribute(this.attributeName)
-    }
   },
 }
 </script>

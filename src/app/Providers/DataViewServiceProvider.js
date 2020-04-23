@@ -64,24 +64,33 @@ export class DataViewServiceProvider extends ServiceProvider {
     })
 
     container.get('template').extendFilter('mapByKey', (value, args) => {
+      if (!value) {
+        value = []
+      }
+      
       return value.map(i => _.get(i, args[0]))
     })
     
     container.get('template').extendFunction('values', (obj, fields) => {
+      
+      if (!fields) {
+        fields = []
+      }
+
       return fields.map( i => {
         return _.get(obj, i)
       })
     })
 
     container.get('template').extendFunction('data', (value) => {
-      let view = container.get('data-view').getViewByName(value + ".resource.upsert");
+      let view = container.get('data-view').getViewByName(value + ".resource.show");
       let manager = new DataResolver().createManager(view);
       return manager;
     })
 
     container.get('template').extendFunction('hasData', (value) => {
       try {
-        let view = container.get('data-view').getViewByName(value + ".resource.upsert");
+        let view = container.get('data-view').getViewByName(value + ".resource.show");
 
         return true;
       } catch (e) {

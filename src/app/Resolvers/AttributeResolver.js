@@ -98,7 +98,7 @@ export class AttributeResolver extends Resolver
 
     if (options.include) {
       data.manager.hook.add('include', (includes) => {
-        return _.merge(includes, options.include)
+        return [].concat(includes, Object.values(options.include))
       })
     }
 

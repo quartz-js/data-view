@@ -69,6 +69,10 @@ export var Common = {
         this.manager.vars = this.vars
       }
 
+      if (this.view.config.options.fixed) {
+        this.fillFixed(this.view.config.options.fixed)
+      }
+
       if (!this.manager) {
       }
     },
@@ -93,6 +97,22 @@ export var Common = {
 
     toComponent(str, prefix) {
       return Utils.nameToComponent(str)
+    },
+
+    fillFixed(fixed)
+    {
+      console.log(fixed);
+      /*fixed: (resource) => {
+        return _.get(options, 'fixed', undefined)
+      },*/
+      if (fixed.attributes) {
+        _.map(fixed.attributes, (val, key) => {
+          let attr = this.manager.getAttribute(key)
+
+          attr.setFixed(val, this.vars)
+          
+        })
+      }
     }
   },
   created() {
