@@ -41,9 +41,10 @@
               <div class="headerContent">
                 <span class="mr-2">{{ header.attribute.label }}</span>
                   <div class='flex-fill'></div>
-                  <q-icon class="mx-1 primary-on-hover" small >open_with</q-icon>
-                  <attribute-view-edit :attribute='header.attribute' style='margin-top: -1px' class="component-editable mx-1" />
-
+                  <span class="headerIconContainer">
+                    <q-icon class="mx-1 primary-on-hover" small >open_with</q-icon>
+                    <attribute-view-edit :attribute='header.attribute' style='margin-top: -1px' class="component-editable mx-1" />
+                  </span>
                 <div 
                   v-on:mousedown="startResize"
                   class="headerResizer"
@@ -126,6 +127,8 @@ export default {
   }
 
   .headerIconContainer {
+    display: flex;
+    align-items: center;
     background: white;
   }
 
