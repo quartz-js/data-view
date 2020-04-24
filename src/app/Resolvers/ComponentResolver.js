@@ -19,10 +19,11 @@ export class ComponentResolver extends Resolver
       let rawComponent = components[component.name]; 
       let rawIncludeComponent = rawComponent.include ? this.dictionary.getViewByName(rawComponent.include) : null
 
+
       component.raw = {
         local: {
           id: rawComponent.id,
-          content: rawComponent.raw
+          content: Object.values(this.dictionary.getViewById(rawComponent.id))[0].raw
         },
         global: rawIncludeComponent ? {
           id: rawIncludeComponent.id,
@@ -31,7 +32,6 @@ export class ComponentResolver extends Resolver
       }
 
       component.view = this.mergeWithBase(data.name, rawComponent);
-
 
       if (!component.view) {
         throw new DataViewError(`Undefined element at key: ${data.name}:${component.name}. ${JSON.stringify(components)}`)
@@ -58,6 +58,7 @@ export class ComponentResolver extends Resolver
     }
 
     attribute = _.merge(view.config, attribute)
+
 
     return attribute;
   }

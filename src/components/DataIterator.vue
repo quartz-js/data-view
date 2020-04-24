@@ -33,17 +33,18 @@
               @mouseover="resizable.show = true" 
               @mouseleave="resizable.show = false" 
             >
-            <th style='width: 40px'></th>
-            <th
+            <td></td>
+            <td
               v-for="header in scope.headers"
               :key="header.text"
               v-if="header.attribute"
               class="px-4 headerContainer cell"
               :data-attribute-name="header.attribute.name"
             >
-              <span>{{ header.attribute.label }}</span>
-              <q-icon small>open_with</q-icon>
-              <q-icon small>settings</q-icon>
+              <span class="mr-2">{{ header.attribute.label }}</span>
+              <q-icon class="mx-1" color="primary" small>open_with</q-icon>
+
+              <attribute-view-edit :attribute='header.attribute' class="component-editable" />
               <div 
                 v-on:mousedown="startResize"
                 class="headerResizer"
@@ -51,10 +52,10 @@
               >
                 <div class="headerResizerSplitter"></div>
               </div>
-            </th>
-            <th>
+            </td>
+            <td>
               Actions
-            </th>
+            </td>
           </tr>
         </thead>
       </template>
@@ -70,6 +71,7 @@ import { Interceptor } from '@quartz/core'
 import _ from 'lodash'
 import { container } from '@quartz/core'
 import { ResizeColumn } from './Concerns/ResizeColumn'
+import AttributeViewEdit from './AttributeViewEdit'
 
 export default {
   props: {
@@ -82,12 +84,15 @@ export default {
     CommonResource,
     ResizeColumn
   ],
+  components: {
+    AttributeViewEdit
+  },
   data() {
     return {
       component: null,
       manager: null,
       resourceComponents: [],
-      globalComponents: []
+      globalComponents: [],
     }
   },
   created() {
@@ -100,12 +105,9 @@ export default {
 </script>
 <style scoped>
 
-  th {
-    position: relative;
-  }
-
   .headerContainer {
     min-width: 80px;
+    position: relative;
   }
 
   .headerResizer {
