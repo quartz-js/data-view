@@ -69,6 +69,7 @@ export class Dictionary {
     config = yaml.load(config)
 
     item.name = this.removeObjectReferences(item.name)
+    item.raw = item.config
     item.config = config
     item.priority = 1;
 
