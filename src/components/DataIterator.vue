@@ -41,10 +41,10 @@
               <div class="headerContent">
                 <span class="mr-2">{{ header.attribute.label }}</span>
                   <div class='flex-fill'></div>
-                  <span class="headerIconContainer">
-                    <q-icon class="mx-1 primary-on-hover" small >open_with</q-icon>
+                  <div class="headerIconContainer">
+                    <span><q-icon class="mx-1 primary-on-hover" small >open_with</q-icon></span>
                     <attribute-view-edit :attribute='header.attribute' style='margin-top: -1px' class="component-editable mx-1" />
-                  </span>
+                  </div>
                 <div 
                   v-on:mousedown="startResize"
                   class="headerResizer"
@@ -54,7 +54,6 @@
               </div>
             </td>
             <td>
-              Actions
             </td>
           </tr>
         </thead>
@@ -103,13 +102,16 @@ export default {
   }
 }
 </script>
+<style>
+  
+  .headerContainer:not(:hover) .headerIconContainer > span > .v-icon{
+    visibility: hidden;
+  }
+</style>
+
 <style scoped>
   
   .headerContainer:not(:hover) .headerResizer{
-    visibility: hidden;
-  }
-
-  .headerContainer:not(:hover) .headerIconContainer{
     visibility: hidden;
   }
 
