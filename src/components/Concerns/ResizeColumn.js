@@ -1,3 +1,5 @@
+import { Yaml } from '../../app/Yaml'
+
 export var ResizeColumn = {
   data() {
     return {
@@ -67,7 +69,7 @@ export var ResizeColumn = {
       this.$container.get('data-view').updateViewByName(view.name, config)
       
       return api.update(viewId, {
-        config: this.$container.get('yaml').dump(config)
+        config: Yaml.put(view.raw, 'options.width', width)
       }).then(response => {
 
       });
