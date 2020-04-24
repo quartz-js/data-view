@@ -20,8 +20,7 @@ export var ResizeColumn = {
 
       clearTimeout(this.resizable.timeout)
 
-      let target = this.resizable.target.closest('.headerContainer')
-      let e1 = target.getBoundingClientRect().x
+      let e1 = this.resizable.target.getBoundingClientRect().x
       let e2 = event.clientX
       let width = e2-e1+7
 
@@ -29,13 +28,8 @@ export var ResizeColumn = {
         width = 80
       }
 
-      let name = target.getAttribute('data-attribute-name')
-
-      this.updateWidthAttribute(name, width)
-
-      this.resizable.timeout = setTimeout(() => {
-        this.saveWidthAttribute(name, width)
-      }, 200)
+      this.resizable.width = width
+      this.updateWidthAttribute(this.resizable.name, width)
     },
 
     updateWidthAttribute(name, width) {
@@ -70,17 +64,17 @@ export var ResizeColumn = {
       
       return api.update(viewId, {
         config: Yaml.put(view.raw, 'options.width', width)
-      }).then(response => {
-
       });
     },
 
     startResize (event) {
+      this.resizable.target = event.target.closest('.headerContainer')
+      this.resizable.name = this.resizable.target.getAttribute('data-attribute-name')
       this.resizable.clientX = event.clientX
-      this.resizable.target = event.target
     },
 
     endResize () {
+      this.saveWidthAttribute(this.resizable.name, this.resizable.width)
       this.resizable.clientX = null;
       this.resizable.target = null;
     },
