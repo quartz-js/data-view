@@ -1,10 +1,10 @@
 <template>
-	<div>
-		<v-btn text icon color="primary" @click="form = true"><v-icon>edit</v-icon></v-btn>
+	<span>
+    <q-icon class="mx-1" color="primary" small @click="form = true">settings</q-icon>
 		<q-form v-model="form">
       <div class="content text-left" v-if="form" style='overflow-y:auto; max-height: 100%'>
 	      <h3 class='title'>Configuration: {{ attribute.manager().name }}.{{ attribute.name }}</h3>
-	      <p class='mt-3'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed iaculis, mauris vel efficitur mollis, erat leo efficitur erat, ut aliquet augue erat sit amet mauris. Nunc rutrum, est id mattis laoreet, sem nibh placerat neque, nec sodales purus felis ac nunc. Mauris auctor faucibus arcu, sed lobortis enim. </p>
+	      <p class='mt-3'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. </p>
 	      <v-divider class='mb-5'></v-divider>
 
 	      <v-select
@@ -25,6 +25,7 @@
         />
 
 	      <v-select
+          v-if="area === 'global'"
 	      	outlined
         	:value="read(area, 'options.type')" 
         	@input="put(area, 'options.type', $event)" 
@@ -86,7 +87,7 @@
 	      </div>
 	    </div>
 		</q-form>
-  </div>
+  </span>
 </template>
 <script>
 
@@ -114,6 +115,8 @@ export default {
 			],
 			types: [
 			  'Base',
+        'Id',
+        'Uuid',
 	      'Text',
 	      'LongText',
 	      'Email',
@@ -128,12 +131,10 @@ export default {
 	      'Number',
 	      'ClassName',
 	      'File',
-	      'Uuid',
 	      'Array',
 	      'MorphToMany',
 	      'BelongsToMany',
 	      'Object',
-	      'Html',
 			],
 			form: false,
 			loading: false
