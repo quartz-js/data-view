@@ -29,10 +29,7 @@
       </template>
       <template slot='header' slot-scope="scope">
         <thead id="head">
-          <tr
-              @mouseover="resizable.show = true" 
-              @mouseleave="resizable.show = false" 
-            >
+          <tr>
             <td></td>
             <td
               v-for="header in scope.headers"
@@ -41,16 +38,18 @@
               class="px-4 headerContainer cell"
               :data-attribute-name="header.attribute.name"
             >
-              <span class="mr-2">{{ header.attribute.label }}</span>
-              <q-icon class="mx-1" color="primary" small>open_with</q-icon>
+              <div class="headerContent">
+                <span class="mr-2">{{ header.attribute.label }}</span>
+                  <div class='flex-fill'></div>
+                  <q-icon class="mx-1 primary-on-hover" small >open_with</q-icon>
+                  <attribute-view-edit :attribute='header.attribute' style='margin-top: -1px' class="component-editable mx-1" />
 
-              <attribute-view-edit :attribute='header.attribute' class="component-editable" />
-              <div 
-                v-on:mousedown="startResize"
-                class="headerResizer"
-                :class="{'hidden': resizable.clientX == null && !resizable.show}"
-              >
-                <div class="headerResizerSplitter"></div>
+                <div 
+                  v-on:mousedown="startResize"
+                  class="headerResizer"
+                >
+                  <div class="headerResizerSplitter"></div>
+                </div>
               </div>
             </td>
             <td>
@@ -104,10 +103,30 @@ export default {
 }
 </script>
 <style scoped>
+  
+  .headerContainer:not(:hover) .headerResizer{
+    visibility: hidden;
+  }
+
+  .headerContainer:not(:hover) .headerIconContainer{
+    visibility: hidden;
+  }
 
   .headerContainer {
     min-width: 80px;
     position: relative;
+    color: rgba(0,0,0,.54);
+    font-weight: 500;
+    font-size: 12px;
+  }
+
+  .headerContent {
+    display: flex;
+    align-items: center;
+  }
+
+  .headerIconContainer {
+    background: white;
   }
 
   .headerResizer {

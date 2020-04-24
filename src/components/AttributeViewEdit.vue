@@ -1,6 +1,6 @@
 <template>
 	<span>
-    <q-icon class="mx-1" color="primary" small @click="form = true">settings</q-icon>
+    <q-icon small @click="form = true" class="primary-on-hover">settings</q-icon>
 		<q-form v-model="form">
       <div class="content text-left" v-if="form" style='overflow-y:auto; max-height: 100%'>
 	      <h3 class='title'>Configuration: {{ attribute.manager().name }}.{{ attribute.name }}</h3>
