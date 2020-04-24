@@ -47,7 +47,11 @@ export var ResizeColumn = {
     },
 
     saveWidthAttribute(name, width) {
-      let viewId = this.manager.getAttribute(name).view.local.id
+
+      let attr = this.manager.getAttribute(name);
+      attr.width = width
+      
+      let viewId = attr.view.local.id
       let view = Object.values(this.$container.get('data-view').getViewById(viewId))[0]
 
       let api = this.$container.get('data-view').newApiByName('data-view');
