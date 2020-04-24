@@ -1,6 +1,6 @@
 <template>
-  <div v-on:mousemove="move">
-    <component v-if="manager" :is="component" v-bind="$attrs" :config="manager">
+  <div v-on:mousemove="move" ref="table">
+    <component v-if="manager" :is="component" v-bind="$attrs" :config="manager" v-on:onLoad="loadWidth">
       
       <template slot='top' slot-scope="scope">
         <component 
@@ -40,7 +40,6 @@
               v-if="header.attribute"
               class="px-4 headerContainer cell"
               :data-attribute-name="header.attribute.name"
-
             >
               <span>{{ header.attribute.label }}</span>
               <q-icon small>open_with</q-icon>
@@ -69,6 +68,8 @@ import { Utils } from '../app/Helpers/Utils'
 import { CommonResource } from '../mixins/CommonResource'
 import { Interceptor } from '@quartz/core'
 import _ from 'lodash'
+import { container } from '@quartz/core'
+import { ResizeColumn } from './Concerns/ResizeColumn'
 
 export default {
   props: {
@@ -78,57 +79,15 @@ export default {
     }
   },
   mixins: [
-    CommonResource
+    CommonResource,
+    ResizeColumn
   ],
   data() {
     return {
-      resizable: {
-        show: false,
-        clientX: null,
-        target: null
-      },
       component: null,
       manager: null,
       resourceComponents: [],
       globalComponents: []
-    }
-  },
-  methods: {
-    move (event) {
-
-      if (this.resizable.clientX === null) {
-        return true;
-      }
-
-      let target = this.resizable.target.closest('.headerContainer')
-      let e1 = target.getBoundingClientRect().x
-      let e2 = event.clientX
-      let width = e2-e1+7
-
-      if (width < 80) {
-        width = 80
-      }
-
-
-      let name = target.getAttribute('data-attribute-name')
-
-      let cols = target.closest('table').querySelectorAll(`[data-attribute-name='${name}']`)
-
-      cols.forEach(t => {
-        t.style.minWidth = `${width}px`
-        t.style.width = `${width}px`
-        t.style.maxWidth = `${width}px`
-      })
-    },
-
-    startResize (event) {
-      this.resizable.clientX = event.clientX
-      this.resizable.target = event.target
-    },
-
-    endResize () {
-      this.resizable.clientX = null;
-      this.resizable.target = null;
     }
   },
   created() {
@@ -136,11 +95,6 @@ export default {
 
     this.resourceComponents = this.$container.get('data-view').getActionsByView(this.view.id, 'resource')
     this.globalComponents = this.$container.get('data-view').getActionsByView(this.view.id, 'global')
-
-    document.addEventListener('mouseup', (i) => {
-      this.endResize()
-    })
-
   }
 }
 </script>

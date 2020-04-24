@@ -41,6 +41,7 @@ export class AttributeResolver extends Resolver
         local: attribute.raw.local,
         global: attribute.raw.global
       },
+      width: options.width,
       condition: options.condition || '1',
       name: options.name,
       multiple: _.get(options, 'multiple', false),
