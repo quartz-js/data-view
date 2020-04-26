@@ -43,7 +43,7 @@
                   <div class='flex-fill'></div>
                   <div class="headerIconContainer">
                     <span class="btn-move-column"><q-icon class="mx-1 primary-on-hover" small >open_with</q-icon></span>
-                    <attribute-view-edit :attribute='header.attribute' style='margin-top: -1px' class="component-editable mx-1" />
+                    <attribute-view-edit :attribute='header.attribute' class="component-editable mx-1" />
                   </div>
                 <div 
                   v-on:mousedown="startResize"
