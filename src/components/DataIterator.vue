@@ -145,6 +145,10 @@ export default {
 
 <style scoped>
   
+  .headerContainer:hover .headerIconContainer{
+    background: white;
+  }
+
   .headerContainer:not(:hover) .headerResizer{
     visibility: hidden;
   }
@@ -167,10 +171,8 @@ export default {
   .headerIconContainer {
     display: flex;
     align-items: center;
-    background: white;
     position: absolute;
     right: 10px;
-    background: white;
   }
 
   .headerResizer {
