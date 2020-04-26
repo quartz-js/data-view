@@ -31,8 +31,14 @@ export class Yaml
   static put (yaml, path, value) {
     let yawn = new YAWN(yaml);
     let json = yawn.toJSON()
-    _.set(json, path, value)
+
+    if (value === '') {
+      _.unset(json, path)
+    } else {
+      _.set(json, path, value)
+    }
+
     yawn.json = json
-    return yawn.yaml
+    return yawn.yaml.replace(/(^[ \t]*\n)/gm, "")
   }
 }
