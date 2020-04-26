@@ -79,7 +79,7 @@ export var ResizeColumn = {
       this.resizable.target = null;
     },
 
-    loadWidth () {
+    loadResize () {
       this.manager.attributes.map((attr) => {
         attr.width && this.updateWidthAttribute(attr.name, attr.width)
       })

@@ -1,6 +1,6 @@
 <template>
   <div v-on:mousemove="move" ref="table">
-    <component v-if="manager" :is="component" v-bind="$attrs" :config="manager" v-on:onLoad="loadWidth">
+    <component v-if="manager" :is="component" v-bind="$attrs" :config="manager" v-on:onLoad="onLoad">
       
       <template slot='top' slot-scope="scope">
         <component 
@@ -29,8 +29,8 @@
       </template>
       <template slot='header' slot-scope="scope">
         <thead id="head">
-          <tr>
-            <td></td>
+          <tr ref="headerRow">
+            <td class="headerContainer"></td>
             <td
               v-for="header in scope.headers"
               :key="header.text"
@@ -42,7 +42,7 @@
                 <span class="mr-2">{{ header.attribute.label }}</span>
                   <div class='flex-fill'></div>
                   <div class="headerIconContainer">
-                    <span><q-icon class="mx-1 primary-on-hover" small >open_with</q-icon></span>
+                    <span class="btn-move-column"><q-icon class="mx-1 primary-on-hover" small >open_with</q-icon></span>
                     <attribute-view-edit :attribute='header.attribute' style='margin-top: -1px' class="component-editable mx-1" />
                   </div>
                 <div 
@@ -53,7 +53,13 @@
                 </div>
               </div>
             </td>
-            <td>
+            <td class="headerContainer">
+              <div class="headerContent">
+                <div class='flex-fill'></div>
+                <div class="headerIconContainer">
+                  <span><q-icon class="mx-1 primary-on-hover" small >settings</q-icon></span>
+                </div>
+              </div>
             </td>
           </tr>
         </thead>
@@ -70,6 +76,7 @@ import { Interceptor } from '@quartz/core'
 import _ from 'lodash'
 import { container } from '@quartz/core'
 import { ResizeColumn } from './Concerns/ResizeColumn'
+import { MoveColumn } from './Concerns/MoveColumn'
 import AttributeViewEdit from './AttributeViewEdit'
 
 export default {
@@ -81,7 +88,8 @@ export default {
   },
   mixins: [
     CommonResource,
-    ResizeColumn
+    ResizeColumn,
+    MoveColumn
   ],
   components: {
     AttributeViewEdit
@@ -92,6 +100,12 @@ export default {
       manager: null,
       resourceComponents: [],
       globalComponents: [],
+    }
+  },
+  methods: {
+    onLoad() {
+      this.loadResize()
+      this.loadMove()
     }
   },
   created() {
@@ -107,6 +121,26 @@ export default {
   .headerContainer:not(:hover) .headerIconContainer > span > .v-icon{
     visibility: hidden;
   }
+
+  .draggable-mirror {
+    background: #efefef;
+    border: 2px solid rgba(0, 0, 0, 0.12);
+    border-width: 0 2px 0 2px;
+    display: flex;
+    align-items: center;
+    opacity: 0.6;
+  }
+
+  .draggable--is-dragging {
+    background: yellow;
+  }
+
+  .draggable-container--is-dragging {
+
+  }
+  .draggable-mirror .headerIconContainer, .draggable-mirror .headerResizer {
+    display: none !important;
+  }
 </style>
 
 <style scoped>
@@ -121,6 +155,8 @@ export default {
     color: rgba(0,0,0,.54);
     font-weight: 500;
     font-size: 12px;
+    outline: 0;
+    border-bottom: thin solid rgba(0, 0, 0, 0.12);
   }
 
   .headerContent {
@@ -131,6 +167,9 @@ export default {
   .headerIconContainer {
     display: flex;
     align-items: center;
+    background: white;
+    position: absolute;
+    right: 10px;
     background: white;
   }
 
