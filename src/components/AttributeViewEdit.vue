@@ -7,58 +7,71 @@
         <p class='mt-3'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. </p>
         <v-divider class='mb-5'></v-divider>
 
-        <v-select
+        <q-select
           outlined
           v-model="area"
           :items="items"
-        ></v-select>
+        ></q-select>
 
         <p v-if="area === 'global'">You will change the attribute in all views that this is invoked. Note that global configuration are overwritten by local one [ID: {{ get(area).id }}]</p>
         <p v-if="area === 'local'">Apply the change only in this scope [ID: {{ get(area).id }}]</p>
 
         <h3 class='subtitle-1 mt-5'>Wording</h3>
 
-        <v-text-field 
-          :label="$t('$quartz.data-view.options.name')" 
+        <q-text-field 
+          :label="$t('$quartz.data-view.options.name.label')" 
+          :hint="$t('$quartz.data-view.options.name.hint')" 
           :value="read(area, 'options.name')" 
           @input="put(area, 'options.name', $event)" 
+          class="my-2"
         />
 
-        <v-select
+        <q-select
           v-if="area === 'global'"
           outlined
+          :label="$t('$quartz.data-view.options.type.label')" 
+          :hint="$t('$quartz.data-view.options.type.hint')" 
           :value="read(area, 'options.type')" 
           @input="put(area, 'options.type', $event)" 
           :items="types"
           disabled
-        ></v-select>
+          class="mt-2"
+        ></q-select>
 
-        <v-text-field 
-          :label="$t('$quartz.data-view.options.hint')" 
-          :value="read(area, 'options.hint')" 
+        <q-text-field 
+          :label="$t('$quartz.data-view.options.hint.label')" 
+          :value="read(area, 'options.hint')"
+          :hint="$t('$quartz.data-view.options.hint.hint')" 
           @input="put(area, 'options.hint', $event)" 
+          class="mb-2"
         />
 
-        <v-text-field 
-          :label="$t('$quartz.data-view.options.default')" 
+        <q-text-field 
+          :label="$t('$quartz.data-view.options.default.label')" 
           :value="read(area, 'options.default')" 
+          :hint="$t('$quartz.data-view.options.default.hint')" 
           @input="put(area, 'options.default', $event)" 
+          class="my-2"
         />
 
         <h3 class='subtitle-1 mt-5'>Options</h3>
 
-        <v-checkbox 
+        <q-checkbox 
           hide-details 
-          :label="$t('$quartz.data-view.options.hide')" 
+          :label="$t('$quartz.data-view.options.hide.label')" 
           :value="read(area, 'options.hide')" 
+          :hint="$t('$quartz.data-view.options.hide.hint')" 
           @change="put(area, 'options.hide', !!$event)"
+          class="my-2"
         />
 
-        <v-checkbox 
+        <q-checkbox 
           hide-details 
-          :label="$t('$quartz.data-view.options.required')" 
+          :label="$t('$quartz.data-view.options.required.label')" 
           :value="read(area, 'options.required')" 
+          :hint="$t('$quartz.data-view.options.required.hint')" 
           @change="put(area, 'options.required', !!$event)"
+          class="my-2"
         />
 
         <h3 class='subtitle-1 mt-5'>Yaml</h3>

@@ -2,11 +2,30 @@
   "$quartz": {
     "data-view": {
       "options": {
-        "name": "Name",
-        "hint": "Hint",
-        "default": "Default",
-        "hide": "Hide",
-        "required": "Required"
+        "type": {
+          "label": "type",
+          "hint": "Type of the data and how this should be handled"
+        },
+        "name": {
+          "label": "Name",
+          "hint": "Name displayed of the field"
+        },
+        "hint": {
+          "label": "Hint",
+          "hint": "A text to describe the content, the information or the purpose of the field"
+        },
+        "default": {
+          "label": "Default",
+          "hint": "Default value of the field"
+        },
+        "hide": {
+          "label": "Hide",
+          "hint": "Should the attribute be displayed at all?"
+        },
+        "required": {
+          "label": "Required",
+          "hint": "Force requirement of the field"
+        }
       }
     }
   }
