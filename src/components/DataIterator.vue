@@ -30,7 +30,7 @@
       <template slot='header' slot-scope="scope">
         <thead id="head">
           <tr ref="headerRow">
-            <td class="headerContainer"></td>
+            <td class="headerContainer" style='width: 40px'></td>
             <td
               v-for="header in scope.headers"
               :key="header.text"
