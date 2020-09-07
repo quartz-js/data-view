@@ -3,7 +3,6 @@ import { AttributeResolver } from '../Resolvers/AttributeResolver'
 import { EnumResolver } from '../Resolvers/EnumResolver'
 import { TabsResolver } from '../Resolvers/TabsResolver'
 import { ComponentResolver } from '../Resolvers/ComponentResolver'
-import { EagerLoadingResolver } from '../Resolvers/EagerLoadingResolver'
 import { DataViewError } from '../Errors/DataViewError'
 import { Interceptor, container } from '@quartz/core'
 
@@ -15,8 +14,7 @@ export class DataResolver {
       new ManagerResolver,
       new ComponentResolver,
       new AttributeResolver,
-      // new TabsResolver,
-      new EagerLoadingResolver
+      // new TabsResolver
     ]
   }
 
