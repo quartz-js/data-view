@@ -1,7 +1,7 @@
 <template>
   <v-flex class="px-4" v-if="show">
     <component :is="getComponent()" v-bind="$attrs" v-model="rawResource" :attribute="getAttribute()" :errors="errors" @input="onChange()"/>
-    <debug :value="{attribute: getAttribute()}" />
+    <debug :value="{attribute: getAttribute()}"/>
   </v-flex>
 </template>
 <script>
@@ -13,26 +13,14 @@ export default {
   components: {
     Debug
   },
-  data() {
-    return {
-      show: false
-    }
-  },
-  watch: {
-    resource: {
-      handler: function (){
-        this.reloadShow()
-      },
-      deep: true
+  computed: {
+    show: function () {
+      return this.$container.get('template').parse(this.getAttribute().condition, { resource: this.resource }) == 1; 
     }
   },
   props: ['manager', 'attributeName', 'attributeOptions', 'errors'],
   mixins: [ HandleResource ],
   methods: {
-
-    reloadShow() {
-      this.show = this.$container.get('template').parse(this.getAttribute().condition, { resource: this.rawResource }) == 1;
-    },
 
     // Change based on Attribute Class
     getComponent() {
@@ -49,9 +37,6 @@ export default {
     getAttribute() {
       return this.manager.getAttribute(this.attributeName)
     }
-  },
-  mounted () {
-    this.reloadShow()
   }
 }
 </script>
