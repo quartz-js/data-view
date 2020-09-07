@@ -7,7 +7,7 @@ import { Dictionary } from '../Services/Dictionary'
 import _ from 'lodash'
 var yaml = require('js-yaml');
 import { Utils } from '../Helpers/Utils'
-
+import moment from 'moment';
 import { Attributes, Relations, Manager } from '@quartz/core'
 
 export class DataViewServiceProvider extends ServiceProvider {
@@ -96,6 +96,11 @@ export class DataViewServiceProvider extends ServiceProvider {
       } catch (e) {
         return false;
       }
+    })
+
+
+    container.get('template').extendFunction('date', (value) => {
+      return moment(value)
     })
 
   }
