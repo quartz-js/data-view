@@ -1,6 +1,6 @@
 <template>
-  <v-flex class="px-4" v-if="show">
-    <component :is="getComponent()" v-bind="$attrs" v-model="rawResource" :attribute="getAttribute()" :errors="errors" @input="onChange()"/>
+  <v-flex class="px-4">
+    <component :is="getComponent()" v-bind="$attrs" v-model="rawResource" :attribute="getAttribute()" :errors="errors" @input="onChange()" :disabled="!show"/>
     <debug :value="{attribute: getAttribute()}"/>
   </v-flex>
 </template>
