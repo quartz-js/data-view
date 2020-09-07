@@ -74,6 +74,9 @@ export var ResizeColumn = {
     },
 
     endResize () {
+      if (this.resizable.target == null) {
+        return true;
+      }
       this.saveWidthAttribute(this.resizable.name, this.resizable.width)
       this.resizable.clientX = null;
       this.resizable.target = null;
