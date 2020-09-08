@@ -2,7 +2,7 @@
   <div>
     <component :is="component" :config="manager" v-bind="$attrs" v-if="view" class="page-show">
       <template slot='body' slot-scope="scope">
-        <q-tabs class='show-tabs' v-model="tabs">
+        <q-tabs class='show-tabs' v-model="tabs" @change="onTabChange">
           <v-tab flat tile :key="key" v-for="(component, key, index) in components" v-if="hasComponent(component)" >{{ key }}</v-tab>
           <v-tab-item 
             v-bind:class="{'ml-5': $container.get('style.q-tabs.vertical'), 'mt-5': !$container.get('style.q-tabs.vertical')}"
@@ -33,6 +33,7 @@
 import ResourceSettings from './ResourceSettings'
 import { DataResolver } from '../app/Services/DataResolver'
 import { CommonPage } from '../mixins/CommonPage'
+import { TabHandler } from './TabHandler'
 import { container, Interceptor } from '@quartz/core'
 import _ from 'lodash'
 
@@ -40,10 +41,10 @@ import _ from 'lodash'
 export default {
   mixins: [
     CommonPage,
+    TabHandler
   ],
   data() {
     return {
-      tabs: null,
       component: null,
       resourceComponents: [],
     }
@@ -73,6 +74,7 @@ export default {
         })
       }
     })
+
   },
   methods: {
     hasComponent(component) {
