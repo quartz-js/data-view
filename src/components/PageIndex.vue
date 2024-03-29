@@ -1,5 +1,6 @@
 <template>
   <div>
+    Yup
     <q-page-index :config="manager" v-bind="$attrs">
       <template slot='body' slot-scope="scope">
         <q-card class="pa-2">

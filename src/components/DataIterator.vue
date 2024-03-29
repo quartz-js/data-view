@@ -1,7 +1,8 @@
 <template>
   <div v-on:mousemove="move" ref="table">
+    <AttributeViewEdit :attribute="attributeSelected" v-if="attributeSelected"/>
+
     <component v-if="manager" :is="component" v-bind="$attrs" :config="manager" v-on:onLoad="onLoad">
-      
       <template slot='top' slot-scope="scope">
         <component 
           v-for="component in globalComponents" 
@@ -35,22 +36,35 @@
               v-for="header in scope.headers"
               :key="header.text"
               v-if="header.attribute"
-              class="px-4 headerContainer cell"
+              class="headerContainer cell"
               :data-attribute-name="header.attribute.name"
             >
-              <div class="headerContent">
-                <span class="mr-2">{{ header.attribute.label }}</span>
-                  <div class='flex-fill'></div>
-                  <div class="headerIconContainer">
-                    <span class="btn-move-column"><q-icon class="mx-1 primary-on-hover" small >open_with</q-icon></span>
-                    <attribute-view-edit :attribute='header.attribute' class="component-editable mx-1" />
+
+              <v-menu offset-y dense  :nudge-width="60">
+                <template v-slot:activator="{ on }">
+                  <div class="headerContent btn-move-column px-4" v-on="on">
+                    <div>
+                      <span>{{ header.attribute.label }}</span>
+                    </div>
                   </div>
-                <div 
-                  v-on:mousedown="startResize"
-                  class="headerResizer"
-                >
-                  <div class="headerResizerSplitter"></div>
-                </div>
+                </template>
+                <v-list class="pa-0" dense>
+                  <v-list-item class='px-3' @click="attributeSelected = header.attribute">
+                    <q-icon small class="mr-2">fas fa-edit</q-icon> Edit 
+                  </v-list-item>
+                  <v-list-item class='px-3' @click="">
+                    <q-icon small class="mr-2">fas fa-sort-alpha-up</q-icon> Sort By Asc
+                  </v-list-item>
+                  <v-list-item class='px-3' @click="">
+                    <q-icon small class="mr-2">fas fa-sort-alpha-down</q-icon> Sort By Desc
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+              <div 
+                v-on:mousedown="startResize"
+                class="headerResizer"
+              >
+                <div class="headerResizerSplitter"></div>
               </div>
             </td>
             <td class="headerContainer">
@@ -100,6 +114,7 @@ export default {
       manager: null,
       resourceComponents: [],
       globalComponents: [],
+      attributeSelected: null
     }
   },
   methods: {
@@ -154,7 +169,7 @@ export default {
   }
 
   .headerContainer {
-    min-width: 80px;
+    min-width: 40px;
     position: relative;
     color: rgba(0,0,0,.54);
     font-weight: 500;
@@ -166,6 +181,7 @@ export default {
   .headerContent {
     display: flex;
     align-items: center;
+    height: 100%;
   }
 
   .headerIconContainer {
@@ -197,4 +213,19 @@ export default {
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
+  td {
+    padding: 0;
+  }
+
+
+  .draggable-source--is-dragging > {
+    visibility: hidden;
+  }
+
+  .headerContainer:hover {
+    cursor:pointer;
+    background: #eeeeee;
+  }
+
 </style>
